@@ -5,28 +5,40 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Anggota;
 
+
 class AnggotaController extends Controller
 {
-    public function index() {
+    // GET /api/anggota
+    public function index()
+    {
         return Anggota::all();
     }
 
-    public function store(Request $request) {
+    // GET /api/anggota/{id}
+    public function show($id)
+    {
+        return Anggota::find($id);
+    }
+    
+    // POST /api/anggota
+    public function store(Request $request)
+    {
         return Anggota::create($request->all());
     }
 
-    public function show($id) {
-        return Anggota::find($id);
-    }
-
-    public function update(Request $request, $id) {
+    // PUT /api/anggota/{id}
+    public function update(Request $request, $id)
+    {
         $anggota = Anggota::find($id);
         $anggota->update($request->all());
         return $anggota;
     }
 
-    public function destroy($id) {
-        Anggota::destroy($id);
-        return ['message' => 'deleted'];
+    // DELETE /api/anggota/{id}
+    public function destroy($id)
+    {
+        $anggota = Anggota::find($id);
+        $anggota->delete();
+        return response()->json(['message' => 'Data berhasil dihapus']);
     }
 }
