@@ -29,7 +29,7 @@ class PinjamanController extends Controller
             'tanggal_pinjaman' => 'required|date',
         ]);
 
-        // bunga DIKUNCI di backend
+        
         $bunga = 2; // 2%
 
         $total = $request->jumlah_pinjaman +
