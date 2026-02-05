@@ -2,17 +2,25 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Simpanan extends Model
 {
-    protected $table = 'simpanan'; // NAMA TABEL ASLI
-    protected $primaryKey = 'id';
+    use HasFactory;
+
+    protected $table = 'simpanans';
 
     protected $fillable = [
-        'anggota_id',
-        'jumlah'
+        'user_id',
+        'jenis_simpanan',
+        'jumlah',
+        'tanggal'
     ];
 
-    public $timestamps = true;
+    // relasi ke user / anggota
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
