@@ -41,4 +41,34 @@ class AnggotaController extends Controller
         $anggota->delete();
         return response()->json(['message' => 'Data berhasil dihapus']);
     }
+
+    public function dashboard()
+    {
+        $user = auth()->user();
+        
+        if ($user->role !== 'anggota') {
+            abort(403);
+        }
+
+        $peminjaman = Peminjaman::where('user_id', $user->id)->first();
+
+        if (!$peminjaman) {
+            return view('dashboardanggota', [
+                'kredit' => 0,
+                'bunga' => 0,
+                'cicilan' => 0,
+                'total' => 0
+            ]);
+        }
+
+        $bunga = $peminjaman->kredit * 0.02;
+        $total = $peminjaman->kredit + $bunga;
+
+        return view('dashboardanggota', [
+            'kredit' => $peminjaman->kredit,
+            'bunga' => $bunga,
+            'cicilan' => $peminjaman->cicilan,
+            'total' => $total
+        ]);
+    }
 }
