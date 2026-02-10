@@ -23,7 +23,6 @@ class PinjamanController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'anggota_id'        => 'required|integer',
             'jumlah_pinjaman'  => 'required|numeric',
             'tenor'            => 'required|integer',
             'tanggal_pinjaman' => 'required|date',
@@ -36,7 +35,7 @@ class PinjamanController extends Controller
                  ($request->jumlah_pinjaman * $bunga / 100);
 
         return Pinjaman::create([
-            'anggota_id'        => $request->anggota_id,
+            'anggota_id' => auth()->id(),
             'approved_by'      => null,
             'jumlah_pinjaman'  => $request->jumlah_pinjaman,
             'bunga_persen'     => $bunga,
