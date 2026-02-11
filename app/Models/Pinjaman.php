@@ -16,7 +16,9 @@ class Pinjaman extends Model
         'tenor',
         'status',
         'tanggal_pinjaman',
-        'total_pinjaman'
+        'total_pinjaman',
+        'tujuan_pinjaman'
+        
     ];
 
     public function anggota()
