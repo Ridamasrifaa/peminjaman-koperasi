@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AnggotaController;
 use App\Http\Controllers\PinjamanController;
-
+use App\Http\Controllers\UserController;
 
 //ROUTE ANGGOTA
 Route::get('/anggota', [AnggotaController::class, 'index']);
@@ -19,3 +19,7 @@ Route::post('/pinjaman', [PinjamanController::class, 'store']);
 Route::get('/pinjaman/{id}', [PinjamanController::class, 'show']);
 Route::put('/pinjaman/{id}', [PinjamanController::class, 'update']);
 Route::delete('/pinjaman/{id}', [PinjamanController::class, 'destroy']);
+
+Route::get('/users', [UserController::class, 'index']);
+Route::delete('/users/{id}', [UserController::class, 'destroy']);
+Route::put('/users/{id}', [UserController::class, 'update']);

@@ -16,23 +16,31 @@ class Pinjaman extends Model
         'tenor',
         'status',
         'tanggal_pinjaman',
-        'total_pinjaman'
+        'total_pinjaman',
+        'tujuan_pinjaman'
     ];
 
     public function anggota()
     {
         return $this->belongsTo(Anggota::class, 'anggota_id');
     }
+
+    public function angsuran()
+    {
+        return $this->hasMany(Angsuran::class);
+    }
+
     protected static function booted()
-{
-    static::creating(function ($pinjaman) {
-        $bunga = 2; // tetap 2%
-        $pinjaman->total_pinjaman = $pinjaman->jumlah_pinjaman + ($pinjaman->jumlah_pinjaman * $bunga / 100);
+    {
+        static::creating(function ($pinjaman) {
+            $bunga = 2; // tetap 2%
+            $pinjaman->total_pinjaman =
+                $pinjaman->jumlah_pinjaman +
+                ($pinjaman->jumlah_pinjaman * $bunga / 100);
 
-        if (!$pinjaman->status) {
-            $pinjaman->status = 'pending';
-        }
-    });
-}
-
+            if (!$pinjaman->status) {
+                $pinjaman->status = 'pending';
+            }
+        });
+    }
 }

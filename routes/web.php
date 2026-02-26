@@ -2,53 +2,98 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\AnggotaController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminDashboardController;
-use App\Http\Controllers\AnggotaDashboardController;
-use App\Http\Controllers\AnggotaCicilanController;
+use App\Http\Controllers\PinjamanController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\CicilanController;
+use App\Http\Controllers\UserDashboardController;
+use App\Http\Controllers\SimpananController;
+
+
+
+/*
+|--------------------------------------------------------------------------
+| WEB ROUTES
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/', function () {
     return view('welcome');
 });
 
+/* AUTH */
 Route::get('/login', function () {
     return view('login');
-});
+})->name('login');
 
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 
+/* LOGOUT */
 Route::post('/logout', function () {
     Auth::logout();
-    request()->session()->invalidate();
-    request()->session()->regenerateToken();
     return redirect('/login');
 })->name('logout');
 
-// ================= ANGGOTA =================
-Route::middleware(['auth', 'role:anggota'])
-    ->prefix('anggota')
-    ->group(function () {
+/* ANGGOTA */
+Route::get('/anggota', [AnggotaController::class, 'index']);
+Route::post('/admin/anggota', [AnggotaController::class, 'store'])
+    ->name('anggota.store');
 
-        Route::get('/dashboard', [AnggotaDashboardController::class, 'index'])
-            ->name('anggota.dashboard');
+/* PINJAMAN */
+Route::get('/pinjaman', [PinjamanController::class, 'index']);
+Route::get('/admin/pinjaman/{id}', [PinjamanController::class, 'detail'])
+    ->name('pinjaman.detail');
+Route::post('/admin/pinjaman', [PinjamanController::class, 'store'])
+    ->name('admin.pinjaman.store');
 
-        Route::get('/cicilan', [AnggotaCicilanController::class, 'index'])
-            ->name('anggota.cicilan');
+/* USERS */
+Route::get('/users', [UserController::class, 'index']);
+Route::delete('/users/{id}', [UserController::class, 'destroy']);
+Route::put('/users/{id}', [UserController::class, 'update']);
 
-        Route::get('/profile', function () {
-            return view('anggota.profile');
-        })->name('anggota.profile');
+/* ADMIN */
+Route::get('/admin/pencarian', [AdminDashboardController::class, 'pencarian'])
+    ->name('admin.pencarian')
+    ->middleware('auth', 'role:admin,sekertaris');
 
-        Route::get('/edit-profile', function () {
-            return view('anggota.edit_profile');
-        })->name('anggota.edit_profile');
+Route::get('/admin/anggota/create', function () {
+    return view('admin.tambah-anggota');
+})->name('anggota.create');
 
-        Route::get('/customer-service', function () {
-            return view('anggota.customer_service');
-        })->name('anggota.customer_service');
+/* PROFILE */
+Route::get('/admin/profile', [AdminDashboardController::class, 'profile'])
+    ->middleware('auth', 'role:admin,sekertaris');
 
-        Route::post('/update-profile',
-            [AnggotaDashboardController::class, 'updateProfile'])
-        ->name('anggota.update_profile');
+// halaman edit profile
+Route::get('/admin/edit-profile', function () {
+    return view('admin.edit-profile');
+})->name('profile.edit')
+  ->middleware('auth', 'role:admin,sekertaris');
 
-    });
+// proses update profile
+Route::put('/admin/profile', [AdminDashboardController::class, 'updateProfile'])
+    ->name('profile.update')
+    ->middleware('auth', 'role:admin,sekertaris');
+
+
+//Route::get('/users/dashboard', [UserDashboardController::class, 'index'])
+    //->name('users.dashboard')
+   // ->middleware('auth');
+
+Route::get('/simpanan/{id}', [SimpananController::class, 'index']);
+Route::post('/simpanan', [SimpananController::class, 'store']);
+
+Route::get('/cicilan/{id}', [CicilanController::class, 'index'])->name('cicilan');
+
+Route::get('/admin/ajukan-pinjaman', function () {
+    return view('admin.ajukan-pinjaman');
+})->name('admin.pinjaman.ajukan');
+
+
+    Route::post('/angsuran/{id}/bayar', [PinjamanController::class, 'bayar'])
+    ->name('angsuran.bayar');
+
+
+

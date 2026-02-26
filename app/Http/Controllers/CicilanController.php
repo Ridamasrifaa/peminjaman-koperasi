@@ -2,37 +2,42 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
-use App\Models\Anggota;
-use App\Models\Pinjaman;
-use App\Models\Cicilan;
-
-class AnggotaCicilanController extends Controller
+use Illuminate\Http\Request;
+  use App\Models\Pinjaman;
+class CicilanController extends Controller
 {
-    public function index()
-    {
-        $user = Auth::user();
-        $anggota = Anggota::where('id_users', $user->id)->first();
+   
 
-        $cicilan = collect();
-        $cicilanSelanjutnya = collect();
+public function index($id)
+{
+    $pinjaman = Pinjaman::with(['anggota','angsuran'])->findOrFail($id);
 
-        if ($anggota) {
-            $pinjaman = Pinjaman::where('anggota_id', $anggota->id)->first();
+    $tagihanSekarang = $pinjaman->angsuran()
+        ->where('status','belum')
+        ->orderBy('cicilan_ke')
+        ->first();
 
-            if ($pinjaman) {
+    $tagihanSelanjutnya = $pinjaman->angsuran()
+        ->where('status','belum')
+        ->orderBy('cicilan_ke')
+        ->skip(1)
+        ->take(2)
+        ->get();
 
-                // 🔥 Ambil dari database
-                $cicilan = Cicilan::where('pinjaman_id', $pinjaman->id)
-                                    ->where('status', 'lunas')
-                                    ->get();
+    // TAMBAH INI
+    $riwayatTagihan = $pinjaman->angsuran()
+        ->where('status','lunas')
+        ->orderBy('cicilan_ke')
+        ->get();
 
-                $cicilanSelanjutnya = Cicilan::where('pinjaman_id', $pinjaman->id)
-                                    ->where('status', 'belum')
-                                    ->get();
-            }
-        }
+    return view('cicilan', compact(
+        'pinjaman',
+        'tagihanSekarang',
+        'tagihanSelanjutnya',
+        'riwayatTagihan'
+    ));
+}
 
-        return view('anggota.cicilan', compact('cicilan','cicilanSelanjutnya'));
-    }
+
+
 }
