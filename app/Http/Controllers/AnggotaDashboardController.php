@@ -74,13 +74,13 @@ class AnggotaDashboardController extends Controller
 
             if ($pinjaman) {
 
-                // 🔥 Ambil cicilan yang sudah lunas
-                $cicilan = Cicilan::where('pinjaman_id', $pinjaman->id)
+                //  Ambil cicilan yang sudah lunas
+                $cicilan = Cicilan::where('kredit_id', $pinjaman->id)
                                     ->where('status', 'lunas')
                                     ->get();
 
-                // 🔥 Ambil cicilan yang belum lunas
-                $cicilanSelanjutnya = Cicilan::where('pinjaman_id', $pinjaman->id)
+                //  Ambil cicilan yang belum lunas
+                $cicilanSelanjutnya = Cicilan::where('kredit_id', $pinjaman->id)
                                     ->where('status', 'belum')
                                     ->get();
             }

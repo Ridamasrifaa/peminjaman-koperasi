@@ -51,7 +51,11 @@ public function detail($id)
 
 public function bayar($id)
 {
-    $angsuran = DB::table('angsuran')->where('id', $id)->first();
+    $angsuran = Angsuran::findOrFail($id);
+        $angsuran->update([
+        'status' => 'lunas',
+        'tanggal_bayar' => now()
+    ]);
 
     if (!$angsuran) {
         return back()->with('error', 'Data angsuran tidak ditemukan');

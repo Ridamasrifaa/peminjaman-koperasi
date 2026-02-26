@@ -10,8 +10,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CicilanController;
 use App\Http\Controllers\UserDashboardController;
 use App\Http\Controllers\SimpananController;
-
-
+use App\Http\Controllers\AnggotaDashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,77 +22,94 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-/* AUTH */
+/* ================= AUTH ================= */
+
 Route::get('/login', function () {
     return view('login');
 })->name('login');
 
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 
-/* LOGOUT */
 Route::post('/logout', function () {
     Auth::logout();
     return redirect('/login');
 })->name('logout');
 
-/* ANGGOTA */
-Route::get('/anggota', [AnggotaController::class, 'index']);
-Route::post('/admin/anggota', [AnggotaController::class, 'store'])
-    ->name('anggota.store');
+/* ================= ANGGOTA DASHBOARD ================= */
 
-/* PINJAMAN */
-Route::get('/pinjaman', [PinjamanController::class, 'index']);
-Route::get('/admin/pinjaman/{id}', [PinjamanController::class, 'detail'])
-    ->name('pinjaman.detail');
-Route::post('/admin/pinjaman', [PinjamanController::class, 'store'])
-    ->name('admin.pinjaman.store');
+Route::get('/anggota', [AnggotaDashboardController::class, 'index'])
+    ->middleware('auth')
+    ->name('anggota.dashboard');
 
-/* USERS */
-Route::get('/users', [UserController::class, 'index']);
-Route::delete('/users/{id}', [UserController::class, 'destroy']);
-Route::put('/users/{id}', [UserController::class, 'update']);
+Route::get('/anggota/customer-service', function () {
+    return view('anggota.customer_service');
+    })->name('anggota.customer_service')
+    ->middleware('auth');
 
-/* ADMIN */
+Route::get('/anggota/cicilan', [AnggotaDashboardController::class, 'cicilan'])
+    ->middleware('auth')
+    ->name('anggota.cicilan');
+
+Route::get('/anggota/profile', [AnggotaDashboardController::class, 'profile'])
+    ->middleware('auth')
+    ->name('anggota.profile');
+
+/* ================= ADMIN ================= */
+
 Route::get('/admin/pencarian', [AdminDashboardController::class, 'pencarian'])
     ->name('admin.pencarian')
     ->middleware('auth', 'role:admin,sekertaris');
 
 Route::get('/admin/anggota/create', function () {
     return view('admin.tambah-anggota');
-})->name('anggota.create');
+})->name('anggota.create')
+  ->middleware('auth', 'role:admin,sekertaris');
 
-/* PROFILE */
+Route::post('/admin/anggota', [AnggotaController::class, 'store'])
+    ->name('anggota.store')
+    ->middleware('auth', 'role:admin,sekertaris');
+
 Route::get('/admin/profile', [AdminDashboardController::class, 'profile'])
     ->middleware('auth', 'role:admin,sekertaris');
 
-// halaman edit profile
 Route::get('/admin/edit-profile', function () {
     return view('admin.edit-profile');
 })->name('profile.edit')
   ->middleware('auth', 'role:admin,sekertaris');
 
-// proses update profile
 Route::put('/admin/profile', [AdminDashboardController::class, 'updateProfile'])
     ->name('profile.update')
     ->middleware('auth', 'role:admin,sekertaris');
 
+Route::get('/admin/ajukan-pinjaman', function () {
+    return view('admin.ajukan-pinjaman');
+})->name('admin.pinjaman.ajukan')
+  ->middleware('auth', 'role:admin,sekertaris');
 
-//Route::get('/users/dashboard', [UserDashboardController::class, 'index'])
-    //->name('users.dashboard')
-   // ->middleware('auth');
+/* ================= PINJAMAN ================= */
+
+Route::get('/pinjaman', [PinjamanController::class, 'index']);
+Route::get('/admin/pinjaman/{id}', [PinjamanController::class, 'detail'])
+    ->name('pinjaman.detail');
+
+Route::post('/admin/pinjaman', [PinjamanController::class, 'store'])
+    ->name('admin.pinjaman.store');
+
+Route::post('/angsuran/{id}/bayar', [PinjamanController::class, 'bayar'])
+    ->name('angsuran.bayar');
+
+/* ================= CICILAN ================= */
+
+Route::get('/cicilan/{id}', [CicilanController::class, 'index'])
+    ->name('cicilan');
+
+/* ================= SIMPANAN ================= */
 
 Route::get('/simpanan/{id}', [SimpananController::class, 'index']);
 Route::post('/simpanan', [SimpananController::class, 'store']);
 
-Route::get('/cicilan/{id}', [CicilanController::class, 'index'])->name('cicilan');
+/* ================= USERS ================= */
 
-Route::get('/admin/ajukan-pinjaman', function () {
-    return view('admin.ajukan-pinjaman');
-})->name('admin.pinjaman.ajukan');
-
-
-    Route::post('/angsuran/{id}/bayar', [PinjamanController::class, 'bayar'])
-    ->name('angsuran.bayar');
-
-
-
+Route::get('/users', [UserController::class, 'index']);
+Route::delete('/users/{id}', [UserController::class, 'destroy']);
+Route::put('/users/{id}', [UserController::class, 'update']);
