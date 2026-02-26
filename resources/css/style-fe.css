@@ -29,6 +29,7 @@ min-width: 98px;
 max-width: 100%;
 height: auto;
 display: block;
+margin: 20px;
 }
 
 .logo-right {
@@ -37,6 +38,7 @@ justify-content: flex-end;
 align-items: center;
 flex: 1;
 gap: 8px;
+margin: 20px;
 }
 
 .logo-right img {
@@ -482,14 +484,24 @@ margin-top:4px;
   font-weight:600;
   text-decoration:none;
   transition: opacity .3s, transform .3s; 
+
+  border: none;          /* ⬅️ ini penting */
+  outline: none;         /* ⬅️ ini penting */
+  box-shadow: none;      /* ⬅️ ini penting */
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.card-bayar:focus,
+.card-bayar:active{
+  outline: none;
+  box-shadow: none;
 }
 
 .card-bayar.hide{
   opacity: 0;
   transform: scale(.9);
 }
-
-
 .riwayat{
 display:flex;
 justify-content:space-between;
@@ -674,7 +686,7 @@ justify-content: center;
     width: 100%;
     max-width: 430px;
     min-height: 50%;
-    background: linear-gradient(#0A9A25, #084605);
+   background: linear-gradient(#0A9A25, #084605);
     display: flex;
     flex-direction: column;
 }
@@ -1937,10 +1949,18 @@ margin-top: 10px;
       background: linear-gradient(to bottom, #1fb53a, #cdeed6);
       max-width: 400px;
     }
+    .user-box .info {
+  background: transparent !important;
+   color: #000000 !important;
+}
+.user-box .info h4,
+.user-box .info p {
+  color: #000000 !important;
+}
     .user {
       background: #e8f6eb;
       border-radius: 14px;
-      padding: 10px;
+      padding: 4px 10px;
       display: flex;
       align-items: center;
       margin-bottom: 10px;
@@ -1949,8 +1969,8 @@ margin-top: 10px;
       margin-bottom: 0;
     }
     .avatar-search {
-      width: 42px;
-      height: 42px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       background: #fff;
       margin-right: 10px;

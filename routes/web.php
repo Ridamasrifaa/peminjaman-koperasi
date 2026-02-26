@@ -7,6 +7,11 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\PinjamanController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CicilanController;
+use App\Http\Controllers\UserDashboardController;
+use App\Http\Controllers\SimpananController;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +45,8 @@ Route::post('/admin/anggota', [AnggotaController::class, 'store'])
 Route::get('/pinjaman', [PinjamanController::class, 'index']);
 Route::get('/admin/pinjaman/{id}', [PinjamanController::class, 'detail'])
     ->name('pinjaman.detail');
+Route::post('/admin/pinjaman', [PinjamanController::class, 'store'])
+    ->name('admin.pinjaman.store');
 
 /* USERS */
 Route::get('/users', [UserController::class, 'index']);
@@ -69,3 +76,24 @@ Route::get('/admin/edit-profile', function () {
 Route::put('/admin/profile', [AdminDashboardController::class, 'updateProfile'])
     ->name('profile.update')
     ->middleware('auth', 'role:admin,sekertaris');
+
+
+//Route::get('/users/dashboard', [UserDashboardController::class, 'index'])
+    //->name('users.dashboard')
+   // ->middleware('auth');
+
+Route::get('/simpanan/{id}', [SimpananController::class, 'index']);
+Route::post('/simpanan', [SimpananController::class, 'store']);
+
+Route::get('/cicilan/{id}', [CicilanController::class, 'index'])->name('cicilan');
+
+Route::get('/admin/ajukan-pinjaman', function () {
+    return view('admin.ajukan-pinjaman');
+})->name('admin.pinjaman.ajukan');
+
+
+    Route::post('/angsuran/{id}/bayar', [PinjamanController::class, 'bayar'])
+    ->name('angsuran.bayar');
+
+
+

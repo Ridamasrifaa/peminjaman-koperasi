@@ -5,7 +5,7 @@
   <title>Pencarian</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://unpkg.com/feather-icons"></script>
-  @vite('resources/js/app.js')
+  @vite('resources/css/style-fe.css')
   
 </head>
 <body class="body-search">
@@ -18,14 +18,19 @@
 </form>
 
  <div class="user-box">
-@forelse($pinjaman as $p)
-  <a href="{{ route('pinjaman.detail', $p->id) }}" class="user">
-    <strong>{{ $p->anggota->nama }}</strong>
-    <span>Rp {{ number_format($p->jumlah_pinjaman) }}</span>
-  </a>
-@empty
-  <p>Tidak ada data</p>
-@endforelse
+  @forelse($pinjaman as $p)
+    <a href="{{ route('pinjaman.detail', $p->id) }}" class="user">
+      <div class="avatar-search">
+        <img src="{{ $p->anggota->avatar ?? 'default-avatar.png' }}" alt="avatar">
+      </div>
+      <div class="info">
+        <strong>{{ $p->anggota->nama }}</strong>
+        <span>{{ substr($p->anggota->no_hp, 0, 2) }}********</span>
+      </div>
+    </a>
+  @empty
+    <p>Tidak ada data.</p>
+  @endforelse
 </div>
 
 
@@ -38,7 +43,7 @@
   <a href="{{ route('admin.pencarian') }}"><i data-feather="search"></i></a>
   <a href="{{ url('/admin/profile') }}"><i data-feather="user"></i></a>
 </div>
->
+
 </div>
 
 <script>

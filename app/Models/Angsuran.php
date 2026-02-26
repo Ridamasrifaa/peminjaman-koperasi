@@ -6,5 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Angsuran extends Model
 {
-    //
+    protected $table = 'angsuran';
+
+    protected $fillable = [
+        'pinjaman_id',
+        'cicilan_ke',
+        'pokok',
+        'bunga',
+        'total_bayar',
+        'tanggal_bayar',
+        'status'
+    ];
+
+    public function pinjaman()
+    {
+        return $this->belongsTo(Pinjaman::class);
+    }
 }

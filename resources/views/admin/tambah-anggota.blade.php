@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://unpkg.com/feather-icons"></script>
-@vite('resources/js/app.js')
+@vite('resources/css/style-fe.css')
 </head>
 
 <body class="body-tambah">
@@ -32,10 +32,10 @@
           <input type="text" name="nama" class="form-control" placeholder="Masukan Nama Lengkap" required>
       </div>
 
-      <div class="mb-3">
-          <label class="form-label fw-semibold">Alamat</label>
-          <input type="text" name="alamat" class="form-control" placeholder="Masukan Alamat" required>
-      </div>
+    <div class="mb-3">
+    <label class="form-label fw-semibold">Email</label>
+    <input type="email" name="email" class="form-control" placeholder="Masukan Email" required>
+</div>
 
       <div class="mb-3">
           <label class="form-label fw-semibold">Nomor Telepon</label>
