@@ -1,25 +1,48 @@
-@extends('anggota.layout')
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  @vite('public/css/style-fe.css')
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cicilan App</title>
+<script src="https://unpkg.com/feather-icons"></script>
+</head>
 
-@section('content')
+<body class="body-ds">
 <div class="app-ds">
+
+  @php
+      $nomorAdmin = "628123456789"; // 🔥 GANTI NOMOR ADMIN DI SINI
+  @endphp
+
   <div class="header-ds">
     <div class="profile-ds">
       <div class="avatar-ds">
-        <img src="{{ asset('assets/images/dedimulyadi.jpg') }}" alt="Avatar">
+
+    @if(auth()->user()->foto)
+        <img src="{{ asset('storage/' . auth()->user()->foto) }}?v={{ time() }}"
+            alt="avatar">
+    @else
+        <img src="{{ asset('assets/images/dedimulyadi.jpg') }}"
+            alt="avatar">
+    @endif
       </div>
       <div>
-        <div class="name-ds">{{ Auth::user()->name }}</div>
-        <div class="phone-ds">{{ $anggota->no_telepon ?? '-' }}</div>
+        <div class="name-ds">{{ auth()->user()->nama }}</div>
+        <div class="phone-ds">{{ auth()->user()->email }}</div>
       </div>
     </div>
-    <a href="{{ route('anggota.customer_service') }}" class="hedset-ds"><i data-feather="headphones"></i></a>
+  <a href="{{ route('anggota.customer_service') }}" class="hedset-ds">
+      <i data-feather="headphones"></i>
+  </a>
   </div>
 
   <div class="content-ds">
+
     <div class="total-wrap-ds">
       <div class="total-card-ds">
         <small>Kredit :</small>
-        <h1 class="center">Rp {{ number_format($kredit,0,',','.') }}</h1>
+        <h1 class="center">Rp {{ number_format($kredit, 0, ',', '.') }}</h1>
       </div>
 
       <div class="info-row-ds">
@@ -42,13 +65,27 @@
 
     <div class="section-ds">
       <div class="section-title-ds">Cicilan Barang</div>
+
       <div class="grid-ds">
-        @foreach($pinjamanBarang ?? [] as $barang)
-          <div class="card-item-ds">
-            <img src="{{ asset('assets/images/'.$barang->gambar) }}" alt="{{ $barang->nama }}">
-            <div class="label-ds">{{ $barang->nama }}</div>
-          </div>
-        @endforeach
+
+        <!-- HANPHONE -->
+        <a href="https://wa.me/{{ env('WA_ADMIN') }}?text={{ urlencode('Halo admin, saya '.auth()->user()->nama.' ingin mengajukan cicilan Hanphone') }}" 
+           target="_blank" 
+           class="card-item-ds">
+
+          <img src="{{ asset('img/phone.webp') }}" alt="Foto">
+          <div class="label-ds">Hanphone</div>
+        </a>
+
+        <!-- SEPATU -->
+        <a href="https://wa.me/{{ env('WA_ADMIN') }}?text={{ urlencode('Halo admin, saya '.auth()->user()->nama.' ingin mengajukan cicilan Sepatu') }}" 
+           target="_blank" 
+           class="card-item-ds">
+
+          <img src="{{ asset('img/shoes.webp') }}" alt="Foto">
+          <div class="label-ds">Sepatu</div>
+        </a>
+
       </div>
     </div>
 
@@ -56,8 +93,34 @@
 </div>
 
 <div class="bottom-nav-ds">
-  <a href="{{ route('anggota.dashboard') }}"><i data-feather="home"></i></a>
-  <a href="{{ route('anggota.profile') }}"><i data-feather="user"></i></a>
-  <a href="#logoutModal" onclick="openModal()"><i data-feather="log-out"></i></a>
+    <a href="{{ route('anggota.dashboard') }}"><i data-feather="home"></i></a>
+    <a href="{{ route('anggota.profile') }}"><i data-feather="user"></i></a>
+    <a href="#logoutModal" onclick="openModal()"><i data-feather="log-out"></i></a>
 </div>
-@endsection
+
+<div id="logoutModal" class="modal-backdrop-custom-pu">
+    <div class="modal-box-pu">
+        <h5>Peringatan</h5>
+        <p>Apakah anda yakin ingin keluar?</p>
+
+        <div class="modal-actions-pu">
+            <button class="btn-yes-pu">Ya</button>
+            <button class="btn-no-pu" onclick="closeModal()">Tidak</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function openModal() {
+    document.getElementById('logoutModal').style.display = 'flex';
+}
+
+function closeModal() {
+    document.getElementById('logoutModal').style.display = 'none';
+}
+
+feather.replace();
+</script>
+
+</body>
+</html>

@@ -1,9 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AnggotaDashboardController;
+use App\Http\Controllers\AnggotaCicilanController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -30,9 +32,8 @@ Route::middleware(['auth', 'role:anggota'])
         Route::get('/dashboard', [AnggotaDashboardController::class, 'index'])
             ->name('anggota.dashboard');
 
-        Route::get('/cicilan', function () {
-            return view('anggota.cicilan');
-        })->name('anggota.cicilan');
+        Route::get('/cicilan', [AnggotaCicilanController::class, 'index'])
+            ->name('anggota.cicilan');
 
         Route::get('/profile', function () {
             return view('anggota.profile');
@@ -45,4 +46,9 @@ Route::middleware(['auth', 'role:anggota'])
         Route::get('/customer-service', function () {
             return view('anggota.customer_service');
         })->name('anggota.customer_service');
+
+        Route::post('/update-profile',
+            [AnggotaDashboardController::class, 'updateProfile'])
+        ->name('anggota.update_profile');
+
     });
