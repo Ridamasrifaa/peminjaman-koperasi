@@ -18,17 +18,22 @@ class AnggotaCicilanController extends Controller
         $cicilanSelanjutnya = collect();
 
         if ($anggota) {
-            $pinjaman = Pinjaman::where('anggota_id', $anggota->id)->first();
+
+            $pinjaman = Pinjaman::where('anggota_id', $anggota->id)
+                                ->where('status', 'approved')
+                                ->latest()
+                                ->first();
 
             if ($pinjaman) {
 
-                // 🔥 Ambil dari database
-                $cicilan = Cicilan::where('pinjaman_id', $pinjaman->id)
+                $cicilan = Cicilan::where('kredit_id', $pinjaman->id)
                                     ->where('status', 'lunas')
+                                    ->orderBy('bulan_ke')
                                     ->get();
 
-                $cicilanSelanjutnya = Cicilan::where('pinjaman_id', $pinjaman->id)
-                                    ->where('status', 'belum')
+                $cicilanSelanjutnya = Cicilan::where('kredit_id', $pinjaman->id)
+                                    ->where('status', 'tidak lunas')
+                                    ->orderBy('bulan_ke')
                                     ->get();
             }
         }

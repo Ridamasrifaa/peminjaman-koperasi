@@ -2,22 +2,23 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Angsuran extends Model
 {
-    protected $table = 'angsuran';
+    use HasFactory;
+
+    protected $table = 'angsurans';
 
     protected $fillable = [
         'pinjaman_id',
-        'cicilan_ke',
-        'pokok',
-        'bunga',
-        'total_bayar',
-        'tanggal_bayar',
-        'status'
+        'angsuran_ke',
+        'jumlah',
+        'tanggal_bayar'
     ];
 
+    // relasi ke pinjaman
     public function pinjaman()
     {
         return $this->belongsTo(Pinjaman::class);

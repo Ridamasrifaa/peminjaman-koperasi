@@ -2,35 +2,30 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Simpanan;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class SimpananController extends Controller
 {
-    public function index($anggota_id)
+    public function index()
     {
-        // ambil data simpanan
-        $simpanan = DB::table('simpanan')
-            ->where('anggota_id', $anggota_id)
-            ->get();
-
-        // hitung total
-        $total = DB::table('simpanan')
-            ->where('anggota_id', $anggota_id)
-            ->sum('jumlah');
-
-        return view('simpanan.index', compact('simpanan','total','anggota_id'));
+        return Simpanan::with('user')->get();
     }
 
     public function store(Request $request)
     {
-        DB::table('simpanan')->insert([
-            'anggota_id' => $request->anggota_id,
-            'jenis_simpanan' => $request->jenis_simpanan,
-            'jumlah' => $request->jumlah,
-            'tanggal_simpanan' => now()
+        $request->validate([
+            'user_id' => 'required',
+            'jenis_simpanan' => 'required',
+            'jumlah' => 'required|numeric',
+            'tanggal' => 'required|date'
         ]);
 
-        return back();
+        $simpanan = Simpanan::create($request->all());
+
+        return response()->json([
+            'message' => 'Simpanan berhasil disimpan',
+            'data' => $simpanan
+        ]);
     }
 }

@@ -10,18 +10,9 @@ class RoleMiddleware
 {
     public function handle(Request $request, Closure $next, ...$roles)
     {
-        // cek apakah user login
-        if (!Auth::check()) {
-            return redirect()->route('login');
-        }
-
         $user = Auth::user();
 
-        // normalize semua role ke lowercase untuk menghindari masalah casing
-        $userRole = strtolower($user->role);
-        $allowedRoles = array_map('strtolower', $roles);
-
-        if (!in_array($userRole, $allowedRoles)) {
+        if (!$user || !in_array($user->role, $roles)) {
             abort(403, 'Unauthorized');
         }
 
