@@ -59,38 +59,50 @@ class AnggotaDashboardController extends Controller
     }
 
     // ================= CICILAN =================
-    public function cicilan()
-    {
-        $user = Auth::user();
+public function cicilan()
+{
+    $user = Auth::user();
+    $anggota = Anggota::where('id_users', $user->id)->first();
 
-        $anggota = Anggota::where('id_users', $user->id)->first();
+    $cicilan = collect();
+    $cicilanSelanjutnya = collect();
+    $tagihanSekarang = null;
+    $riwayatTagihan = collect(); 
 
-        $cicilan = collect();
-        $cicilanSelanjutnya = collect();
+    if ($anggota) {
+    $pinjaman = Pinjaman::where('anggota_id', $anggota->id)
+    ->where('status', 'approved')
+    ->orderBy('id','desc')
+    ->first();
 
-        if ($anggota) {
+        if ($pinjaman) {
+            // cicilan lunas
+            $cicilan = Cicilan::where('kredit_id', $pinjaman->id)
+                                ->where('status', 'lunas')
+                                ->get();
 
-            $pinjaman = Pinjaman::where('anggota_id', $anggota->id)->first();
+            // cicilan belum lunas
+            $cicilanSelanjutnya = Cicilan::where('kredit_id', $pinjaman->id)
+                                ->where('status', 'tidak lunas')
+                                ->get();
 
-            if ($pinjaman) {
+            // tagihan saat ini = cicilan pertama yang belum lunas
+            $tagihanSekarang = $cicilanSelanjutnya->first();
 
-                //  Ambil cicilan yang sudah lunas
-                $cicilan = Cicilan::where('kredit_id', $pinjaman->id)
-                                    ->where('status', 'lunas')
-                                    ->get();
-
-                //  Ambil cicilan yang belum lunas
-                $cicilanSelanjutnya = Cicilan::where('kredit_id', $pinjaman->id)
-                                    ->where('status', 'belum')
-                                    ->get();
-            }
+            // riwayat tagihan = semua cicilan (urut berdasarkan bulan_ke)
+            $riwayatTagihan = Cicilan::where('kredit_id', $pinjaman->id)
+                                     ->orderBy('bulan_ke', 'asc')
+                                     ->get();
         }
-
-        return view('anggota.cicilan', compact(
-            'cicilan',
-            'cicilanSelanjutnya'
-        ));
     }
+
+    return view('anggota.cicilan', compact(
+        'cicilan',
+        'cicilanSelanjutnya',
+        'tagihanSekarang',
+        'riwayatTagihan'
+    ));
+}
 
     // ================= UPDATE PROFILE =================
     public function updateProfile(Request $request)
@@ -119,4 +131,39 @@ class AnggotaDashboardController extends Controller
         return redirect()->route('anggota.edit_profile')
                ->with('success', 'Profile berhasil diupdate');
     }
+    public function profile()
+{
+    $user = auth()->user(); // ambil data user yang login
+    return view('anggota.profile', compact('user'));
+}
+
+
+public function editProfile()
+{
+    $user = auth()->user();
+    return view('anggota.edit_profile', compact('user'));
+}
+public function customerService()
+{
+    
+    return view('anggota.customer_service'); // nanti kita bikin view ini
+}
+public function pinjaman()
+{
+    $user = auth()->user();
+
+    // ambil anggota berdasarkan id_users
+    $anggota = \App\Models\Anggota::where('id_users', $user->id)->first();
+
+    if (!$anggota) {
+        return back()->with('error', 'Data anggota tidak ditemukan');
+    }
+
+    $pinjaman = \App\Models\Pinjaman::with('angsuran')
+        ->where('anggota_id', $anggota->id)
+        ->orderBy('tanggal_pinjaman', 'desc')
+        ->get();
+
+    return view('anggota.cicilan', compact('pinjaman'));
+}
 }

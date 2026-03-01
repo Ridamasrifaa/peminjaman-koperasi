@@ -24,24 +24,30 @@
         <div class="card-area-pu">
 
             <div class="card-profile-pu shadow">
-                <img src="{{ auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) : asset('assets/images/default-avatar.jpg') }}" class="avatar-pu" alt="Avatar">
+                <img src="{{ auth()->user()->foto ? asset('storage/' . auth()->user()->foto) : asset('assets/images/default-avatar.jpg') }}" class="avatar-pu" alt="Avatar">
 
 
                 <a href="{{ url('/admin/edit-profile') }}" class="editprofile-link-pu">
                     Edit Profile
                 </a>
 
-                <h4>Halo, {{ auth()->user()->name }}</h4>
+            <h4>
+    Halo, {{ auth()->user()->nama ? auth()->user()->nama : 'Admin' }}
+</h4>
 
-                <div class="field-pu">
-                    <span style="opacity: 50%; font-weight: bold;">Nama :</span>
-                    <span style="margin-left: 10px; font-weight: 500;">{{ auth()->user()->name }}</span>
-                </div>
+<div class="field-pu">
+    <span style="opacity: 50%; font-weight: bold;">Nama :</span>
+    <span style="margin-left: 10px; font-weight: 500;">
+        {{ auth()->user()->nama }}
+    </span>
+</div>
 
-                <div class="field-pu">
-                    <span style="opacity: 50%; font-weight: bold;">Email :</span>
-                    <span style="margin-left: 10px; font-weight: 500;">{{ auth()->user()->email }}</span>
-                </div>
+<div class="field-pu">
+    <span style="opacity: 50%; font-weight: bold;">Email :</span>
+    <span style="margin-left: 10px; font-weight: 500;">
+        {{ auth()->user()->email }}
+    </span>
+</div>
 
                 <form action="{{ route('logout') }}" method="POST" class="mt-2">
                     @csrf

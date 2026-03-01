@@ -3,18 +3,21 @@
 @section('content')
 <div class="app-edit">
   <div class="header-edit">
-    <a href="{{ route('anggota.profile') }}" class="panah-edit"><i data-feather="arrow-left"></i></a>
+    <a href="{{ route('anggota.profile') }}" class="panah-edit">
+      <i data-feather="arrow-left"></i>
+    </a>
     <div>Edit Profil</div>
   </div>
 
   <form action="{{ route('anggota.update_profile') }}" method="POST" enctype="multipart/form-data">
     @csrf
     @method('PUT')
+
     <div class="upload-box">
-      <input type="file" name="avatar" id="imageInput" accept="image/*">
+      <input type="file" name="foto" id="imageInput" accept="image/*">
       <label for="imageInput" class="upload-label">
-        @if($anggota->avatar)
-          <img id="preview" src="{{ asset('assets/images/'.$anggota->avatar) }}">
+        @if(auth()->user()->foto)
+          <img id="preview" src="{{ asset('storage/' . auth()->user()->foto) }}">
         @else
           <img id="preview" hidden>
           <div class="placeholder">
@@ -25,6 +28,8 @@
       </label>
     </div>
 
+    <input type="text" name="nama" value="{{ auth()->user()->nama }}">
+
     <div class="submit-edit">
       <button type="submit">Simpan</button>
     </div>
@@ -33,7 +38,6 @@
   <div class="bottom-nav-edit">
     <a href="{{ route('anggota.dashboard') }}" class="menu-edit"><i data-feather="home"></i></a>
     <a href="{{ route('anggota.profile') }}" class="menu-edit"><i data-feather="user"></i></a>
-    <a href="#logoutModal" onclick="openModal()" class="menu-edit"><i data-feather="log-out"></i></a>
   </div>
 </div>
 @endsection

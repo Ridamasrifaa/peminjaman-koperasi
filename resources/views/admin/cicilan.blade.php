@@ -37,12 +37,13 @@
         {{ \Carbon\Carbon::parse($tagihanSekarang->tanggal_bayar)->format('d M Y') }}
       </small>
     </div>
-  <form action="{{ route('angsuran.bayar', $tagihanSekarang->id) }}" method="POST">
-  @csrf
-  <button type="submit" class="card-bayar">
-    Bayar
-  </button>
-</form>
+
+    <!-- GANTI FORM JADI BUTTON MODAL -->
+    <button type="button" class="card-bayar"
+      onclick="openPinModal({{ $tagihanSekarang->id }})">
+      Bayar
+    </button>
+
   </div>
 </div>
 @endif
@@ -78,7 +79,6 @@
   </div>
 </div>
 @endforeach
-
 </div>
 
 <a href="{{ route('admin.pinjaman.ajukan') }}" class="fab-plus">
@@ -86,6 +86,7 @@
 </a>
 
 </div>
+
 <div id="pinModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:999;">
   <div style="background:#fff; width:90%; max-width:360px; margin:150px auto; padding:20px; border-radius:14px; text-align:center;">
     <h3>Masukkan PIN</h3>
@@ -96,21 +97,23 @@
         style="width:100%; padding:10px; border-radius:10px; border:1px solid #ccc; margin:12px 0;">
 
       <div style="display:flex; justify-content:center; gap:10px;">
-        <button type="button" onclick="closePinModal()" style="padding:6px 18px;border-radius:8px;">Batal</button>
-        <button type="submit" style="padding:6px 18px;border-radius:8px;background:#0A9A25;color:white;">Bayar</button>
+        <button type="button" onclick="closePinModal()">Batal</button>
+        <button type="submit" style="background:#0A9A25;color:white;">Bayar</button>
       </div>
     </form>
   </div>
 </div>
+
 <script>
 function openPinModal(id) {
     document.getElementById('pinModal').style.display = 'block';
-    document.getElementById('pinForm').action = `/admin/angsuran/${id}/bayar`;
+    document.getElementById('pinForm').action = `/angsuran/${id}/bayar`;
 }
 
 function closePinModal() {
     document.getElementById('pinModal').style.display = 'none';
 }
 </script>
+
 </body>
 </html>

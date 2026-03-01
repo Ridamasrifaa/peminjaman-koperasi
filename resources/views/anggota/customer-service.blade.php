@@ -1,4 +1,4 @@
-@extends('anggota.layout')
+//---@extends('anggota.layout')
 
 @section('content')
 <div class="app-cs">
@@ -27,4 +27,4 @@
     <a href="#logoutModal" onclick="openModal()" class="menu"><i data-feather="log-out"></i></a>
   </div>
 </div>
-@endsection
+@endsection---//

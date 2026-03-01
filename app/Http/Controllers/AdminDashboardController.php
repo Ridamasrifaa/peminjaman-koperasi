@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Pinjaman;
+use App\Models\Anggota;
 use Illuminate\Support\Facades\Storage; // buat simpan file
 use Illuminate\Support\Facades\Auth; // ambil user login
 
@@ -14,20 +14,19 @@ class AdminDashboardController extends Controller
         return view('admin.dashboard'); // untuk route /admin/dashboard
     }
 
-    public function pencarian(Request $request)
-    {
-        $q = $request->q;
+ public function pencarian(Request $request)
+{
+    $q = $request->q;
 
-        $pinjaman = Pinjaman::with('anggota')
-            ->when($q, function ($query) use ($q) {
-                $query->whereHas('anggota', function ($sub) use ($q) {
-                    $sub->where('nama', 'like', "%$q%");
-                });
-            })
-            ->get();
+    // Ambil anggota + pinjaman langsung (eager loading)
+    $anggota = Anggota::with('pinjaman')
+        ->when($q, function($query) use ($q) {
+            $query->where('nama', 'like', "%$q%");
+        })
+        ->get();
 
-        return view('admin.pencarian', compact('pinjaman'));
-    }
+    return view('admin.pencarian', compact('anggota'));
+}
 
     public function profile()
     {
@@ -38,20 +37,18 @@ public function updateProfile(Request $request)
 {
     $user = auth()->user();
 
-    // validasi file avatar
     $request->validate([
-        'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
     ]);
 
-    if ($request->hasFile('avatar')) {
-        $file = $request->file('avatar');
-        $filename = time() . '_' . $file->getClientOriginalName();
+    if ($request->hasFile('foto')) {
 
-        // simpan file di storage/app/public/avatars
-        $file->storeAs('avatars', $filename, 'public');
+        if ($user->foto) {
+            Storage::delete('public/' . $user->foto);
+        }
 
-        // simpan path di DB
-        $user->avatar = 'avatars/' . $filename;
+        $path = $request->file('foto')->store('profile', 'public');
+        $user->foto = $path;
     }
 
     $user->save();

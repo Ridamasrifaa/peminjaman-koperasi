@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Anggota;
-
+use App\Models\User; 
+use Illuminate\Support\Facades\Hash; 
 
 class AnggotaController extends Controller
 {
@@ -27,19 +28,32 @@ class AnggotaController extends Controller
         return Anggota::find($id);
     }
     
-    // POST /api/anggota
+    
 public function store(Request $request)
 {
     $validated = $request->validate([
         'nama' => 'required|string|max:255',
-        'alamat' => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email', // cek di users karena login pakai tabel users
         'no_hp' => 'required|string|max:20',
-        'id_users' => 'required|integer',
     ]);
 
-    Anggota::create($validated);
+    //  akun login otomatis
+    $user = User::create([
+        'name' => $validated['nama'], // bisa juga diganti 'nama' kalau model User diubah
+        'email' => $validated['email'],
+        'password' => Hash::make('default123'), // password default
+        'role' => 'anggota',
+    ]);
 
-    return redirect('/admin/pencarian')->with('success', 'Anggota berhasil ditambahkan!');
+    //  Buat record anggota
+    Anggota::create([
+        'nama' => $validated['nama'],
+        'email' => $validated['email'],
+        'no_hp' => $validated['no_hp'],
+        'id_users' => $user->id,
+    ]);
+
+    return redirect('/admin/pencarian')->with('success', 'Anggota berhasil ditambahkan dan bisa login!');
 }
 
 

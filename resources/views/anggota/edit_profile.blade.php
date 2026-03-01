@@ -40,7 +40,7 @@
           enctype="multipart/form-data">
 
         @csrf
-
+         
         {{-- FOTO --}}
         <div class="upload-box">
             <input type="file" id="imageInput" name="foto" accept="image/*">

@@ -19,57 +19,48 @@ class PinjamanController extends Controller
     {
         return Pinjaman::with('anggota')->findOrFail($id);
     }
-public function detail($id)
-{
-    $pinjaman = Pinjaman::with('anggota')->findOrFail($id);
 
-    $tagihanSekarang = $pinjaman->angsuran()
-        ->where('status','belum')
-        ->orderBy('cicilan_ke')
-        ->first();
+    public function detail($id)
+    {
+        $pinjaman = Pinjaman::with('anggota')->findOrFail($id);
 
-    $tagihanSelanjutnya = $pinjaman->angsuran()
-        ->where('status','belum')
-        ->orderBy('cicilan_ke')
-        ->skip(1)
-        ->take(2)
-        ->get();
+ $tagihanSekarang = $pinjaman->angsuran()
+    ->where('status','belum')
+    ->orderBy('cicilan_ke')
+    ->first();
 
-    // 🔥 RIWAYAT KHUSUS YANG LUNAS
-    $riwayatTagihan = $pinjaman->angsuran()
-        ->where('status','lunas')
-        ->orderBy('cicilan_ke')
-        ->get();
+$tagihanSelanjutnya = $pinjaman->angsuran()
+    ->where('status','belum')
+    ->orderBy('cicilan_ke')
+    ->skip(1)
+    ->take(2)
+    ->get();
 
-    return view('admin.cicilan', compact(
-        'pinjaman',
-        'tagihanSekarang',
-        'tagihanSelanjutnya',
-        'riwayatTagihan'
-    ));
-}
+$riwayatTagihan = $pinjaman->angsuran()
+    ->where('status','lunas')
+    ->orderBy('cicilan_ke')
+    ->get();
 
-public function bayar($id)
-{
-    $angsuran = Angsuran::findOrFail($id);
-        $angsuran->update([
-        'status' => 'lunas',
-        'tanggal_bayar' => now()
-    ]);
-
-    if (!$angsuran) {
-        return back()->with('error', 'Data angsuran tidak ditemukan');
+        return view('admin.cicilan', compact(
+            'pinjaman',
+            'tagihanSekarang',
+            'tagihanSelanjutnya',
+            'riwayatTagihan'
+        ));
     }
 
-    DB::table('angsuran')
-        ->where('id', $id)
-        ->update([
+    public function bayar($id)
+    {
+        $angsuran = Angsuran::findOrFail($id);
+
+        $angsuran->update([
             'status' => 'lunas',
             'tanggal_bayar' => now()
         ]);
 
-    return back()->with('success', 'Angsuran berhasil dibayar');
-}
+        return back()->with('success', 'Angsuran berhasil dibayar');
+    }
+
     public function store(Request $request)
     {
         $request->validate([

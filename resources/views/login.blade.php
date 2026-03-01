@@ -30,9 +30,9 @@
     </form>
 
     <!-- Kalau mau tombol Users tetap FE sama, bisa dipisah -->
-    <a href="/pages/users/dashboard.html">
-        <button class="button-login" type="button">Masuk Users</button>
-    </a>
+  <a href="{{ route('anggota.dashboard') }}">
+    <button class="button-login" type="button">Masuk Users</button>
+</a>
 </div>
 
 </div>

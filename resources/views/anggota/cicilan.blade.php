@@ -31,13 +31,12 @@
         Rp {{ number_format($tagihanSekarang->total_bayar, 0, ',', '.') }}
       </div>
       <small>
-        {{ \Carbon\Carbon::parse($tagihanSekarang->tanggal_bayar)->format('d M Y') }}
+        Bulan {{ $tagihanSekarang->cicilan_ke }}
       </small>
     </div>
     @else
       <p>Tidak ada tagihan saat ini</p>
     @endif
-
 
     {{-- TAGIHAN SELANJUTNYA --}}
     <h4>Tagihan Selanjutnya</h4>
@@ -49,13 +48,12 @@
         Rp {{ number_format($item->total_bayar, 0, ',', '.') }}
       </div>
       <small>
-        {{ \Carbon\Carbon::parse($item->tanggal_bayar)->format('d M Y') }}
+        Bulan {{ $item->cicilan_ke }}
       </small>
     </div>
     @endforeach
 
   </div>
-
 
   {{-- RIWAYAT --}}
   <div class="section-cu">
@@ -70,8 +68,7 @@
         </div>
       </div>
       <div class="bulan-cu">
-        Bulan {{ $item->cicilan_ke }} <br>
-        {{ \Carbon\Carbon::parse($item->tanggal_bayar)->format('d M Y') }}
+        Bulan {{ $item->cicilan_ke }}
       </div>
     </div>
     @empty
