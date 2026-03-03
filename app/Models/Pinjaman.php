@@ -40,7 +40,7 @@ class Pinjaman extends Model
                 ($pinjaman->jumlah_pinjaman * $bunga / 100);
 
             if (!$pinjaman->status) {
-                $pinjaman->status = 'pending';
+                $pinjaman->status = 'approved';
             }
         });
     }

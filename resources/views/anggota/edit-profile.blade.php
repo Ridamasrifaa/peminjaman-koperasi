@@ -28,6 +28,8 @@
       </label>
     </div>
 
+    
+
     <input type="text" name="nama" value="{{ auth()->user()->nama }}">
 
     <div class="submit-edit">

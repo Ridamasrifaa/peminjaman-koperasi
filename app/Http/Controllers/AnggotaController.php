@@ -47,7 +47,6 @@ class AnggotaController extends Controller
 
         try {
 
-            // Buat akun login otomatis
             $user = User::create([
                 'name'     => $validated['nama'],
                 'email'    => $validated['email'],

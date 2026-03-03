@@ -81,3 +81,7 @@ Route::get('/anggota/customer-service', [AnggotaDashboardController::class, 'cus
     ->middleware('auth');
     Route::get('/anggota/pinjaman', [AnggotaDashboardController::class, 'pinjaman'])
     ->name('anggota.pinjaman');
+
+    Route::get('/anggota/pinjaman', [AnggotaDashboardController::class, 'listPinjaman'])->name('anggota.list.pinjaman');
+
+Route::get('/anggota/cicilan/{id}', [AnggotaDashboardController::class, 'cicilanDetail'])->name('anggota.cicilan.detail');
