@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Angsuran; 
 
 class Pinjaman extends Model
 {
@@ -27,13 +28,13 @@ class Pinjaman extends Model
 
     public function angsuran()
     {
-        return $this->hasMany(Angsuran::class);
+        return $this->hasMany(Angsuran::class, 'pinjaman_id');
     }
 
     protected static function booted()
     {
         static::creating(function ($pinjaman) {
-            $bunga = 2; // tetap 2%
+            $bunga = 2;
             $pinjaman->total_pinjaman =
                 $pinjaman->jumlah_pinjaman +
                 ($pinjaman->jumlah_pinjaman * $bunga / 100);

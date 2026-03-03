@@ -43,7 +43,7 @@
 
 <input type="hidden" name="tenor" id="tenor" required>
 <input type="hidden" name="tanggal_pinjaman" value="{{ date('Y-m-d') }}">
-<input type="hidden" name="anggota_id" value="1">
+<input type="hidden" name="anggota_id" value="{{ $id }}">
 
 <div class="info-box">
 <div class="info-row-ajukan">
@@ -62,7 +62,6 @@
 
 </form>
 </div>
-
 <script>
 feather.replace();
 
@@ -79,18 +78,28 @@ document.getElementById('jumlah').addEventListener('input', hitung);
 
 function hitung() {
     let jumlah = parseFloat(document.getElementById('jumlah').value);
-
     if (!jumlah || tenor === 0) return;
 
-    let total = jumlah + (jumlah * bunga / 100);
-    let cicilan = total / tenor;
+    let pokokPerBulan = jumlah / tenor;
+    let sisaPokok = jumlah;
+
+    let hasil = "";
+
+    for (let i = 1; i <= tenor; i++) {
+        let bungaBulanIni = sisaPokok * bunga / 100;
+        let cicilan = pokokPerBulan + bungaBulanIni;
+
+        hasil += `Bulan ${i}: ${formatRupiah(cicilan)}<br>`;
+
+        sisaPokok -= pokokPerBulan;
+    }
 
     document.getElementById('diterima').innerText = formatRupiah(jumlah);
-    document.getElementById('cicilan').innerText = formatRupiah(cicilan);
+    document.getElementById('cicilan').innerHTML = hasil;
 }
 
 function formatRupiah(angka) {
-    return 'Rp ' + angka.toLocaleString('id-ID');
+    return 'Rp ' + Math.round(angka).toLocaleString('id-ID');
 }
 </script>
 

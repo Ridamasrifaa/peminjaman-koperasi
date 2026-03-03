@@ -40,7 +40,7 @@
           enctype="multipart/form-data">
 
         @csrf
-
+         
         {{-- FOTO --}}
         <div class="upload-box">
             <input type="file" id="imageInput" name="foto" accept="image/*">
@@ -58,15 +58,6 @@
                     <p>Masukan Gambar</p>
                 </div>
             </label>
-        </div>
-
-        {{-- NAMA --}}
-        <div style="padding: 20px;">
-            <input type="text"
-                   name="nama"
-                   value="{{ auth()->user()->nama }}"
-                   placeholder="Nama"
-                   style="width:100%; padding:10px;">
         </div>
 
         <div class="submit-edit">

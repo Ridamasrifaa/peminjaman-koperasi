@@ -2,37 +2,40 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
-use App\Models\Anggota;
-use App\Models\Pinjaman;
-use App\Models\Cicilan;
-
-class AnggotaCicilanController extends Controller
+use Illuminate\Http\Request;
+  use App\Models\Pinjaman;
+class CicilanController extends Controller
 {
-    public function index()
-    {
-        $user = Auth::user();
-        $anggota = Anggota::where('id_users', $user->id)->first();
+   
+public function index($id)
+{
+    $pinjaman = Pinjaman::with(['anggota','angsuran'])->findOrFail($id);
 
-        $cicilan = collect();
-        $cicilanSelanjutnya = collect();
+    // tagihan sekarang = cicilan pertama yg belum lunas
+    $tagihanSekarang = $pinjaman->angsuran()
+        ->where('status','tidak lunas')
+        ->orderBy('bulan_ke')
+        ->first();
 
-        if ($anggota) {
-            $pinjaman = Pinjaman::where('anggota_id', $anggota->id)->first();
+    // tagihan selanjutnya (2 setelahnya)
+    $tagihanSelanjutnya = $pinjaman->angsuran()
+        ->where('status','tidak lunas')
+        ->orderBy('bulan_ke')
+        ->skip(1)
+        ->take(2)
+        ->get();
 
-            if ($pinjaman) {
+    // riwayat tagihan = yg sudah lunas
+    $riwayatTagihan = $pinjaman->angsuran()
+        ->where('status','lunas')
+        ->orderBy('bulan_ke')
+        ->get();
 
-                // 🔥 Ambil dari database
-                $cicilan = Cicilan::where('pinjaman_id', $pinjaman->id)
-                                    ->where('status', 'lunas')
-                                    ->get();
-
-                $cicilanSelanjutnya = Cicilan::where('pinjaman_id', $pinjaman->id)
-                                    ->where('status', 'belum')
-                                    ->get();
-            }
-        }
-
-        return view('anggota.cicilan', compact('cicilan','cicilanSelanjutnya'));
-    }
+    return view('cicilan', compact(
+        'pinjaman',
+        'tagihanSekarang',
+        'tagihanSelanjutnya',
+        'riwayatTagihan'
+    ));
+}
 }

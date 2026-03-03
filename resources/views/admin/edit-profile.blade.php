@@ -17,30 +17,31 @@
     <div>Edit Profil</div>
   </div>
 
-  <!-- Form upload gambar -->
-  <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
-      @csrf
-      @method('PUT')
+ <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
+    @csrf
+    @method('PUT')
 
-      <div class="upload-box">
-          <input type="file" id="imageInput" name="avatar" accept="image/*">
+    <div class="upload-box">
+        <input type="file" id="imageInput" name="foto" accept="image/*">
 
-          <label for="imageInput" class="upload-label">
-              <!-- Preview gambar -->
-            <img id="preview" src="{{ asset('assets/images/' . auth()->user()->avatar) ?? '' }}">
+        <label for="imageInput" class="upload-label">
 
+            <img id="preview"
+                 src="{{ auth()->user()->foto 
+                        ? asset('storage/' . auth()->user()->foto) 
+                        : asset('assets/images/default-avatar.jpg') }}">
 
-              <div class="placeholder">
-                  <i data-feather="upload"></i>
-                  <p>Masukan Gambar</p>
-              </div>
-          </label>
-      </div>
+            <div class="placeholder">
+                <i data-feather="upload"></i>
+                <p>Masukan Gambar</p>
+            </div>
+        </label>
+    </div>
 
-      <div class="submit-edit">
-          <button type="submit">Simpan</button>
-      </div>
-  </form>
+    <div class="submit-edit">
+        <button type="submit">Simpan</button>
+    </div>
+</form>
 
   <!-- Bottom nav pakai route Laravel -->
   <div class="bottom-nav-edit">

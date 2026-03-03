@@ -9,9 +9,12 @@ class Anggota extends Model
 {
     protected $table = 'anggota'; // Nama tabel di database
     protected $primaryKey = 'id';  // Nama kolom primary key
- protected $fillable = ['nama', 'alamat', 'no_hp', 'id_users'];
+    protected $fillable = ['nama', 'email', 'no_hp', 'id_users'];
 
- // kolom yang bisa diisi
+public function pinjaman()
+{
+    return $this->hasMany(\App\Models\Pinjaman::class, 'anggota_id');
+}
 }
 
 

@@ -4,15 +4,23 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Anggota;
-
+use App\Models\User; 
+use Illuminate\Support\Facades\Hash; 
 
 class AnggotaController extends Controller
 {
     // GET /api/anggota
-    public function index()
-    {
-        return Anggota::all();
-    }
+    public function index(Request $request)
+{
+    $query = $request->get('q');
+
+    $anggota = Anggota::when($query, function($q) use ($query) {
+        $q->where('nama', 'like', "%$query%");
+    })->get();
+
+    return view('admin.pencarian', compact('anggota'));
+}
+
 
     // GET /api/anggota/{id}
     public function show($id)
@@ -20,11 +28,35 @@ class AnggotaController extends Controller
         return Anggota::find($id);
     }
     
-    // POST /api/anggota
-    public function store(Request $request)
-    {
-        return Anggota::create($request->all());
-    }
+    
+public function store(Request $request)
+{
+    $validated = $request->validate([
+        'nama' => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email', // cek di users karena login pakai tabel users
+        'no_hp' => 'required|string|max:20',
+    ]);
+
+    //  akun login otomatis
+    $user = User::create([
+        'name' => $validated['nama'], // bisa juga diganti 'nama' kalau model User diubah
+        'email' => $validated['email'],
+        'password' => Hash::make('default123'), // password default
+        'role' => 'anggota',
+    ]);
+
+    //  Buat record anggota
+    Anggota::create([
+        'nama' => $validated['nama'],
+        'email' => $validated['email'],
+        'no_hp' => $validated['no_hp'],
+        'id_users' => $user->id,
+    ]);
+
+    return redirect('/admin/pencarian')->with('success', 'Anggota berhasil ditambahkan dan bisa login!');
+}
+
+
 
     // PUT /api/anggota/{id}
     public function update(Request $request, $id)
@@ -42,33 +74,10 @@ class AnggotaController extends Controller
         return response()->json(['message' => 'Data berhasil dihapus']);
     }
 
-    public function dashboard()
-    {
-        $user = auth()->user();
-        
-        if ($user->role !== 'anggota') {
-            abort(403);
-        }
+public function create()
+{
+    return view('admin.tambah-anggota');
+}
 
-        $peminjaman = Peminjaman::where('user_id', $user->id)->first();
 
-        if (!$peminjaman) {
-            return view('dashboardanggota', [
-                'kredit' => 0,
-                'bunga' => 0,
-                'cicilan' => 0,
-                'total' => 0
-            ]);
-        }
-
-        $bunga = $peminjaman->kredit * 0.02;
-        $total = $peminjaman->kredit + $bunga;
-
-        return view('dashboardanggota', [
-            'kredit' => $peminjaman->kredit,
-            'bunga' => $bunga,
-            'cicilan' => $peminjaman->cicilan,
-            'total' => $total
-        ]);
-    }
 }

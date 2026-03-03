@@ -1,41 +1,92 @@
 <?php
-
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
 use App\Models\Pinjaman;
+use App\Models\Angsuran;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class PinjamanController extends Controller
+
 {
-    // GET /api/pinjaman
     public function index()
     {
         return Pinjaman::with('anggota')->get();
     }
 
-    // GET /api/pinjaman/{id}
     public function show($id)
     {
         return Pinjaman::with('anggota')->findOrFail($id);
     }
 
-    // POST /api/pinjaman
+    public function detail($id)
+    {
+    
+    $pinjaman = Pinjaman::with('anggota')->find($id);
+
+if (!$pinjaman) {
+    return view('admin.cicilan', [
+        'pinjaman' => null,
+        'tagihanSekarang' => null,
+        'tagihanSelanjutnya' => collect(),
+        'riwayatTagihan' => collect()
+    ]);
+}
+
+ $tagihanSekarang = $pinjaman->angsuran()
+    ->where('status','belum')
+    ->orderBy('cicilan_ke')
+    ->first();
+
+$tagihanSelanjutnya = $pinjaman->angsuran()
+    ->where('status','belum')
+    ->orderBy('cicilan_ke')
+    ->skip(1)
+    ->take(2)
+    ->get();
+
+$riwayatTagihan = $pinjaman->angsuran()
+    ->where('status','lunas')
+    ->orderBy('cicilan_ke')
+    ->get();
+
+        return view('admin.cicilan', compact(
+            'pinjaman',
+            'tagihanSekarang',
+            'tagihanSelanjutnya',
+            'riwayatTagihan'
+        ));
+    }
+
+    public function bayar($id)
+    {
+        $angsuran = Angsuran::findOrFail($id);
+
+        $angsuran->update([
+            'status' => 'lunas',
+            'tanggal_bayar' => now()
+        ]);
+
+        return back()->with('success', 'Angsuran berhasil dibayar');
+    }
+
     public function store(Request $request)
     {
         $request->validate([
+            'anggota_id'        => 'required|integer',
             'jumlah_pinjaman'  => 'required|numeric',
             'tenor'            => 'required|integer',
             'tanggal_pinjaman' => 'required|date',
         ]);
 
-        
-        $bunga = 2; // 2%
+        $bunga = 2;
 
         $total = $request->jumlah_pinjaman +
                  ($request->jumlah_pinjaman * $bunga / 100);
 
-        return Pinjaman::create([
-            'anggota_id' => auth()->id(),
+        $pinjaman = Pinjaman::create([
+            'anggota_id'        => $request->anggota_id,
             'approved_by'      => null,
             'jumlah_pinjaman'  => $request->jumlah_pinjaman,
             'bunga_persen'     => $bunga,
@@ -44,9 +95,38 @@ class PinjamanController extends Controller
             'tanggal_pinjaman' => $request->tanggal_pinjaman,
             'total_pinjaman'   => $total,
         ]);
+
+   $pokokPerBulan = $pinjaman->jumlah_pinjaman / $pinjaman->tenor;
+$sisaPokok = $pinjaman->jumlah_pinjaman;
+$totalPinjaman = 0;
+
+for ($i = 1; $i <= $pinjaman->tenor; $i++) {
+
+    $bungaBulanIni = $sisaPokok * ($pinjaman->bunga_persen / 100);
+    $totalBayar = $pokokPerBulan + $bungaBulanIni;
+
+    Angsuran::create([
+        'pinjaman_id' => $pinjaman->id,
+        'cicilan_ke' => $i,
+        'pokok' => $pokokPerBulan,
+        'bunga' => $bungaBulanIni,
+        'total_bayar' => $totalBayar,
+        'tanggal_bayar' => Carbon::parse($pinjaman->tanggal_pinjaman)->addMonths($i),
+        'status' => 'belum',
+    ]);
+
+    $totalPinjaman += $totalBayar;
+    $sisaPokok -= $pokokPerBulan;
+}
+
+// update total pinjaman real
+$pinjaman->update([
+    'total_pinjaman' => $totalPinjaman
+]);
+
+        return redirect()->route('pinjaman.detail', $pinjaman->id);
     }
 
-    // PUT /api/pinjaman/{id}
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -58,7 +138,6 @@ class PinjamanController extends Controller
 
         $pinjaman = Pinjaman::findOrFail($id);
 
-        // bunga tetap 2%
         $bunga = 2;
 
         $total = $request->jumlah_pinjaman +
@@ -74,10 +153,9 @@ class PinjamanController extends Controller
             'approved_by'      => $request->approved_by,
         ]);
 
-        return $pinjaman;
+        return redirect()->route('pinjaman.detail', $pinjaman->id);
     }
 
-    // DELETE /api/pinjaman/{id}
     public function destroy($id)
     {
         $pinjaman = Pinjaman::findOrFail($id);
