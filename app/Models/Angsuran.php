@@ -18,8 +18,11 @@ class Angsuran extends Model
         'status'
     ];
 
+    // ===============================
+    // RELASI KE PINJAMAN
+    // ===============================
     public function pinjaman()
     {
-        return $this->belongsTo(Pinjaman::class);
+        return $this->belongsTo(Pinjaman::class, 'pinjaman_id');
     }
 }

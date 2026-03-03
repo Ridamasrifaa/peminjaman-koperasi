@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Storage;
 
 class AnggotaDashboardController extends Controller
 {
+
     // ================= DASHBOARD =================
     public function index()
     {
@@ -25,7 +26,7 @@ class AnggotaDashboardController extends Controller
 
         if ($anggota) {
 
-            // 🔥 FIX: ambil pinjaman approved terbaru
+            // ambil pinjaman approved terbaru
             $pinjaman = Pinjaman::where('anggota_id', $anggota->id)
                 ->where('status', 'approved')
                 ->orderBy('id', 'desc')
@@ -33,9 +34,29 @@ class AnggotaDashboardController extends Controller
 
             if ($pinjaman) {
 
-                $kredit  = $pinjaman->jumlah_pinjaman;
-                $bunga   = $pinjaman->bunga_persen;
+                $bunga = $pinjaman->bunga_persen;
 
+                /*
+                ============================================
+                TOTAL SUDAH DIBAYAR
+                ============================================
+                */
+                $totalDibayar = Angsuran::where('pinjaman_id', $pinjaman->id)
+                    ->where('status', 'lunas')
+                    ->sum('total_bayar');
+
+                /*
+                ============================================
+                SISA KREDIT
+                ============================================
+                */
+                $kredit = $pinjaman->total_pinjaman - $totalDibayar;
+
+                /*
+                ============================================
+                CICILAN PER BULAN
+                ============================================
+                */
                 $cicilan = $pinjaman->tenor > 0
                     ? $pinjaman->total_pinjaman / $pinjaman->tenor
                     : 0;
@@ -62,6 +83,7 @@ class AnggotaDashboardController extends Controller
         ));
     }
 
+
     // ================= CICILAN =================
     public function cicilan()
     {
@@ -71,7 +93,7 @@ class AnggotaDashboardController extends Controller
         $cicilan = collect();
         $cicilanSelanjutnya = collect();
         $tagihanSekarang = null;
-        $riwayatTagihan = collect(); 
+        $riwayatTagihan = collect();
 
         if ($anggota) {
 
@@ -106,6 +128,7 @@ class AnggotaDashboardController extends Controller
         ]);
     }
 
+
     // ================= UPDATE PROFILE =================
     public function updateProfile(Request $request)
     {
@@ -133,6 +156,7 @@ class AnggotaDashboardController extends Controller
         return redirect()->route('anggota.edit_profile')
                ->with('success', 'Profile berhasil diupdate');
     }
+
 
     public function profile()
     {

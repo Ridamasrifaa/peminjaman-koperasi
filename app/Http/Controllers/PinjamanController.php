@@ -95,20 +95,39 @@ public function cekPinjamanAnggota($id)
         ));
     }
 
-    // ===============================
-    // BAYAR ANGSURAN
-    // ===============================
-    public function bayar($id)
-    {
-        $angsuran = Angsuran::findOrFail($id);
+   // ===============================
+// BAYAR ANGSURAN
+// ===============================
+public function bayar($id)
+{
+    // ambil data angsuran
+    $angsuran = Angsuran::findOrFail($id);
 
-        $angsuran->update([
-            'status' => 'lunas',
-            'tanggal_bayar' => now()
+    // ubah status angsuran jadi lunas
+    $angsuran->update([
+        'status' => 'lunas',
+        'tanggal_bayar' => now()
+    ]);
+
+    // ===============================
+    // AMBIL PINJAMAN TERKAIT
+    // ===============================
+    $pinjaman = Pinjaman::find($angsuran->pinjaman_id);
+
+    // cek apakah masih ada cicilan belum lunas
+    $sisaAngsuran = Angsuran::where('pinjaman_id', $pinjaman->id)
+        ->where('status', 'belum')
+        ->count();
+
+    // jika semua cicilan sudah lunas
+    if ($sisaAngsuran == 0) {
+        $pinjaman->update([
+            'status' => 'lunas'
         ]);
-
-        return back()->with('success', 'Angsuran berhasil dibayar');
     }
+
+    return back()->with('success', 'Angsuran berhasil dibayar');
+}
 
     // ===============================
     // STORE PINJAMAN BARU
@@ -130,7 +149,7 @@ public function cekPinjamanAnggota($id)
             'jumlah_pinjaman'   => $request->jumlah_pinjaman,
             'bunga_persen'      => $bunga,
             'tenor'             => $request->tenor,
-            'status'            => 'pending',
+            'status'            => 'approved',
             'tanggal_pinjaman'  => $request->tanggal_pinjaman,
             'total_pinjaman'    => 0,
         ]);
