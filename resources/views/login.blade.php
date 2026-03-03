@@ -26,12 +26,9 @@
         <label class="label-login">Masukan Password</label>
         <input class="input-login" type="password" name="password" placeholder="Password" required>
 
-        <button type="submit" class="button-login">Masuk Admin</button>
+        <button type="submit" class="button-login">Masuk</button>
     </form>
 
-    <!-- Kalau mau tombol Users tetap FE sama, bisa dipisah -->
-  <a href="{{ route('anggota.dashboard') }}">
-    <button class="button-login" type="button">Masuk Users</button>
 </a>
 </div>
 

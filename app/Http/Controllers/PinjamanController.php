@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 
 class PinjamanController extends Controller
-
 {
     public function index()
     {
@@ -20,36 +19,73 @@ class PinjamanController extends Controller
         return Pinjaman::with('anggota')->findOrFail($id);
     }
 
-    public function detail($id)
+    // ===============================
+    // LIST SEMUA PINJAMAN PER ANGGOTA
+    // ===============================
+    public function listPinjaman($id)
     {
-    
-    $pinjaman = Pinjaman::with('anggota')->find($id);
+        $pinjamanList = Pinjaman::with('angsuran')
+            ->where('anggota_id', $id)
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-if (!$pinjaman) {
-    return view('admin.cicilan', [
-        'pinjaman' => null,
-        'tagihanSekarang' => null,
-        'tagihanSelanjutnya' => collect(),
-        'riwayatTagihan' => collect()
-    ]);
+        return view('admin.list-pinjaman', compact('pinjamanList'));
+    }
+
+// ===============================
+// CEK & ARAHKAN PINJAMAN ANGGOTA
+// ===============================
+public function cekPinjamanAnggota($id)
+{
+    $pinjamanCount = Pinjaman::where('anggota_id', $id)->count();
+
+    // Tidak ada pinjaman
+    if ($pinjamanCount == 0) {
+        return redirect()->route('admin.pinjaman.ajukan', $id);
+    }
+
+    // Kalau cuma 1 → langsung ke detail
+    if ($pinjamanCount == 1) {
+        $pinjaman = Pinjaman::where('anggota_id', $id)->first();
+        return redirect()->route('pinjaman.detail', $pinjaman->id);
+    }
+
+    // Kalau lebih dari 1 → ke list
+    return redirect()->route('admin.pinjaman.list', $id);
 }
 
- $tagihanSekarang = $pinjaman->angsuran()
-    ->where('status','belum')
-    ->orderBy('cicilan_ke')
-    ->first();
+    // ===============================
+    // DETAIL CICILAN
+    // ===============================
+    public function detail($id)
+    {
+        $pinjaman = Pinjaman::with('anggota')->find($id);
 
-$tagihanSelanjutnya = $pinjaman->angsuran()
-    ->where('status','belum')
-    ->orderBy('cicilan_ke')
-    ->skip(1)
-    ->take(2)
-    ->get();
+        if (!$pinjaman) {
+            return view('admin.cicilan', [
+                'pinjaman' => null,
+                'tagihanSekarang' => null,
+                'tagihanSelanjutnya' => collect(),
+                'riwayatTagihan' => collect()
+            ]);
+        }
 
-$riwayatTagihan = $pinjaman->angsuran()
-    ->where('status','lunas')
-    ->orderBy('cicilan_ke')
-    ->get();
+        $tagihanSekarang = $pinjaman->angsuran()
+            ->where('status','belum')
+            ->orderBy('cicilan_ke')
+            ->first();
+
+        $tagihanSelanjutnya = $pinjaman->angsuran()
+            ->where('status','belum')
+            ->orderBy('cicilan_ke')
+            ->skip(1)
+            ->take(2)
+            ->get();
+
+        $riwayatTagihan = $pinjaman->angsuran()
+            ->where('status','lunas')
+            ->orderBy('cicilan_ke')
+            ->get();
 
         return view('admin.cicilan', compact(
             'pinjaman',
@@ -59,6 +95,9 @@ $riwayatTagihan = $pinjaman->angsuran()
         ));
     }
 
+    // ===============================
+    // BAYAR ANGSURAN
+    // ===============================
     public function bayar($id)
     {
         $angsuran = Angsuran::findOrFail($id);
@@ -71,62 +110,64 @@ $riwayatTagihan = $pinjaman->angsuran()
         return back()->with('success', 'Angsuran berhasil dibayar');
     }
 
+    // ===============================
+    // STORE PINJAMAN BARU
+    // ===============================
     public function store(Request $request)
     {
         $request->validate([
             'anggota_id'        => 'required|integer',
-            'jumlah_pinjaman'  => 'required|numeric',
-            'tenor'            => 'required|integer',
-            'tanggal_pinjaman' => 'required|date',
+            'jumlah_pinjaman'   => 'required|numeric',
+            'tenor'             => 'required|integer',
+            'tanggal_pinjaman'  => 'required|date',
         ]);
 
         $bunga = 2;
 
-        $total = $request->jumlah_pinjaman +
-                 ($request->jumlah_pinjaman * $bunga / 100);
-
         $pinjaman = Pinjaman::create([
             'anggota_id'        => $request->anggota_id,
-            'approved_by'      => null,
-            'jumlah_pinjaman'  => $request->jumlah_pinjaman,
-            'bunga_persen'     => $bunga,
-            'tenor'            => $request->tenor,
-            'status'           => 'pending',
-            'tanggal_pinjaman' => $request->tanggal_pinjaman,
-            'total_pinjaman'   => $total,
+            'approved_by'       => null,
+            'jumlah_pinjaman'   => $request->jumlah_pinjaman,
+            'bunga_persen'      => $bunga,
+            'tenor'             => $request->tenor,
+            'status'            => 'pending',
+            'tanggal_pinjaman'  => $request->tanggal_pinjaman,
+            'total_pinjaman'    => 0,
         ]);
 
-   $pokokPerBulan = $pinjaman->jumlah_pinjaman / $pinjaman->tenor;
-$sisaPokok = $pinjaman->jumlah_pinjaman;
-$totalPinjaman = 0;
+        $pokokPerBulan = $pinjaman->jumlah_pinjaman / $pinjaman->tenor;
+        $sisaPokok = $pinjaman->jumlah_pinjaman;
+        $totalPinjaman = 0;
 
-for ($i = 1; $i <= $pinjaman->tenor; $i++) {
+        for ($i = 1; $i <= $pinjaman->tenor; $i++) {
 
-    $bungaBulanIni = $sisaPokok * ($pinjaman->bunga_persen / 100);
-    $totalBayar = $pokokPerBulan + $bungaBulanIni;
+            $bungaBulanIni = $sisaPokok * ($pinjaman->bunga_persen / 100);
+            $totalBayar = $pokokPerBulan + $bungaBulanIni;
 
-    Angsuran::create([
-        'pinjaman_id' => $pinjaman->id,
-        'cicilan_ke' => $i,
-        'pokok' => $pokokPerBulan,
-        'bunga' => $bungaBulanIni,
-        'total_bayar' => $totalBayar,
-        'tanggal_bayar' => Carbon::parse($pinjaman->tanggal_pinjaman)->addMonths($i),
-        'status' => 'belum',
-    ]);
+            Angsuran::create([
+                'pinjaman_id'   => $pinjaman->id,
+                'cicilan_ke'    => $i,
+                'pokok'         => $pokokPerBulan,
+                'bunga'         => $bungaBulanIni,
+                'total_bayar'   => $totalBayar,
+                'tanggal_bayar' => Carbon::parse($pinjaman->tanggal_pinjaman)->addMonths($i),
+                'status'        => 'belum',
+            ]);
 
-    $totalPinjaman += $totalBayar;
-    $sisaPokok -= $pokokPerBulan;
-}
+            $totalPinjaman += $totalBayar;
+            $sisaPokok -= $pokokPerBulan;
+        }
 
-// update total pinjaman real
-$pinjaman->update([
-    'total_pinjaman' => $totalPinjaman
-]);
+        $pinjaman->update([
+            'total_pinjaman' => $totalPinjaman
+        ]);
 
         return redirect()->route('pinjaman.detail', $pinjaman->id);
     }
 
+    // ===============================
+    // UPDATE PINJAMAN
+    // ===============================
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -156,6 +197,9 @@ $pinjaman->update([
         return redirect()->route('pinjaman.detail', $pinjaman->id);
     }
 
+    // ===============================
+    // DELETE PINJAMAN
+    // ===============================
     public function destroy($id)
     {
         $pinjaman = Pinjaman::findOrFail($id);

@@ -18,20 +18,25 @@
 
     <div class="user-box">
       @forelse($anggota as $p)
+
         @php
-          $pinjamanPertama = $p->pinjaman->first(); // aman karena eager loaded
+          // Ambil pinjaman TERBARU (bukan first random)
+          $pinjamanTerbaru = $p->pinjaman->sortByDesc('created_at')->first();
         @endphp
-       <a href="{{ $pinjamanPertama 
-    ? route('pinjaman.detail', $pinjamanPertama->id) 
-    : route('admin.pinjaman.ajukan', $p->id) }}" class="user">
+
+        <a href="{{ route('admin.cek.pinjaman', $p->id) }}" class="user">
+
           <div class="avatar-search">
             <img src="{{ $p->avatar ?? 'default-avatar.png' }}" alt="avatar">
           </div>
+
           <div class="info">
             <strong>{{ $p->nama }}</strong>
             <span>{{ substr($p->no_hp, 0, 2) }}********</span>
           </div>
+
         </a>
+
       @empty
         <p>Tidak ada data.</p>
       @endforelse
