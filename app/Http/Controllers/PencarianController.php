@@ -9,13 +9,16 @@ use App\Models\User;
 class PencarianController extends Controller
 {
 
-public function index()
+public function index(Request $request)
 {
-    $data = Pinjaman::join('users', 'pinjaman.anggota_id', '=', 'users.id')
-        ->select('pinjaman.id as pinjaman_id', 'users.nama', 'pinjaman.jumlah_pinjaman')
-        ->get();
+    $query = User::with('pinjaman');
 
-    return view('pencarian', compact('data'));
+    if ($request->q) {
+        $query->where('nama', 'like', '%' . $request->q . '%');
+    }
+
+    $anggota = $query->get();
+
+    return view('pencarian', compact('anggota'));
 }
-
 }

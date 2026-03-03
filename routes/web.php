@@ -36,16 +36,33 @@ Route::middleware(['auth', 'role:admin,sekertaris'])->group(function () {
     Route::get('/admin/profile', [AdminDashboardController::class, 'profile'])->name('admin.profile');
     Route::get('/admin/edit-profile', function () { return view('admin.edit-profile'); })->name('profile.edit');
     Route::put('/admin/profile', [AdminDashboardController::class, 'updateProfile'])->name('profile.update');
-  Route::get('/admin/ajukan-pinjaman/{id}', function ($id) {
-  return view('admin.ajukan-pinjaman', compact('id'));
+    Route::get('/admin/ajukan-pinjaman/{id}', function ($id) {
+    return view('admin.ajukan-pinjaman', compact('id'));
 })->name('admin.pinjaman.ajukan');
 });
 
 // PINJAMAN
 Route::get('/pinjaman', [PinjamanController::class, 'index']);
-Route::get('/admin/pinjaman/{id}', [PinjamanController::class, 'detail'])->name('pinjaman.detail');
-Route::post('/admin/pinjaman', [PinjamanController::class, 'store'])->name('admin.pinjaman.store');
-Route::post('/angsuran/{id}/bayar', [PinjamanController::class, 'bayar'])->name('angsuran.bayar');
+
+Route::get('/admin/pinjaman/{id}', 
+    [PinjamanController::class, 'detail']
+)->name('pinjaman.detail');
+
+Route::get('/admin/anggota/{id}/pinjaman', 
+    [PinjamanController::class, 'listPinjaman']
+)->name('admin.pinjaman.list');
+
+Route::post('/admin/pinjaman', 
+    [PinjamanController::class, 'store']
+)->name('admin.pinjaman.store');
+
+Route::post('/angsuran/{id}/bayar', 
+    [PinjamanController::class, 'bayar']
+)->name('angsuran.bayar');
+
+Route::get('/admin/anggota/{id}/cek-pinjaman',
+    [PinjamanController::class, 'cekPinjamanAnggota']
+)->name('admin.cek.pinjaman');
 
 // CICILAN
 Route::get('/cicilan/{id}', [CicilanController::class, 'index'])->name('cicilan');
