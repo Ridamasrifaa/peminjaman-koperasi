@@ -26,7 +26,7 @@
             class="avatar-pu"
             style="margin-bottom: 8px;">
     @else
-        <img src="{{ asset('assets/images/dedimulyadi.jpg') }}"
+        <img src="{{ asset('assets/images/') }}"
             class="avatar-pu"
             style="margin-bottom: 8px;">
     @endif
@@ -47,12 +47,12 @@
         {{ auth()->user()->email }}
     </span>
 </div>
-<div class="field-pu" style="margin-top:15px;">
+{{-- <div class="field-pu" style="margin-top:15px;">
     <a href="{{ route('anggota.pinjaman') }}" 
        style="display:block; text-align:center; font-weight:600;">
         Lihat Pinjaman & Cicilan
     </a>
-</div>
+</div> --}}
 </div>
 
 </div>

@@ -36,7 +36,9 @@ Route::middleware(['auth', 'role:admin,sekertaris'])->group(function () {
     Route::get('/admin/profile', [AdminDashboardController::class, 'profile'])->name('admin.profile');
     Route::get('/admin/edit-profile', function () { return view('admin.edit-profile'); })->name('profile.edit');
     Route::put('/admin/profile', [AdminDashboardController::class, 'updateProfile'])->name('profile.update');
-    Route::get('/admin/ajukan-pinjaman', function () { return view('admin.ajukan-pinjaman'); })->name('admin.pinjaman.ajukan');
+  Route::get('/admin/ajukan-pinjaman/{id}', function ($id) {
+  return view('admin.ajukan-pinjaman', compact('id'));
+})->name('admin.pinjaman.ajukan');
 });
 
 // PINJAMAN

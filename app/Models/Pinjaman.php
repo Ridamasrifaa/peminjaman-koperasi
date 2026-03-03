@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Angsuran; // ✅ HARUS ini, bukan Cicilan
+use App\Models\Angsuran; 
 
 class Pinjaman extends Model
 {

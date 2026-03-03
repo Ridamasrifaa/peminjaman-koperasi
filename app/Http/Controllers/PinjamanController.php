@@ -1,14 +1,14 @@
 <?php
-
 namespace App\Http\Controllers;
-use Illuminate\Support\Facades\DB;
 
+use Illuminate\Support\Facades\DB;
 use App\Models\Pinjaman;
 use App\Models\Angsuran;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
 class PinjamanController extends Controller
+
 {
     public function index()
     {
@@ -22,7 +22,17 @@ class PinjamanController extends Controller
 
     public function detail($id)
     {
-        $pinjaman = Pinjaman::with('anggota')->findOrFail($id);
+    
+    $pinjaman = Pinjaman::with('anggota')->find($id);
+
+if (!$pinjaman) {
+    return view('admin.cicilan', [
+        'pinjaman' => null,
+        'tagihanSekarang' => null,
+        'tagihanSelanjutnya' => collect(),
+        'riwayatTagihan' => collect()
+    ]);
+}
 
  $tagihanSekarang = $pinjaman->angsuran()
     ->where('status','belum')
@@ -86,22 +96,35 @@ $riwayatTagihan = $pinjaman->angsuran()
             'total_pinjaman'   => $total,
         ]);
 
-        $pokok = $pinjaman->jumlah_pinjaman / $pinjaman->tenor;
-        $bungaPerBulan = ($pinjaman->jumlah_pinjaman * $pinjaman->bunga_persen / 100) / $pinjaman->tenor;
+   $pokokPerBulan = $pinjaman->jumlah_pinjaman / $pinjaman->tenor;
+$sisaPokok = $pinjaman->jumlah_pinjaman;
+$totalPinjaman = 0;
 
-        for ($i = 1; $i <= $pinjaman->tenor; $i++) {
-            Angsuran::create([
-                'pinjaman_id' => $pinjaman->id,
-                'cicilan_ke' => $i,
-                'pokok' => $pokok,
-                'bunga' => $bungaPerBulan,
-                'total_bayar' => $pokok + $bungaPerBulan,
-                'tanggal_bayar' => Carbon::parse($pinjaman->tanggal_pinjaman)->addMonths($i),
-                'status' => 'belum',
-            ]);
-        }
+for ($i = 1; $i <= $pinjaman->tenor; $i++) {
 
-        return $pinjaman;
+    $bungaBulanIni = $sisaPokok * ($pinjaman->bunga_persen / 100);
+    $totalBayar = $pokokPerBulan + $bungaBulanIni;
+
+    Angsuran::create([
+        'pinjaman_id' => $pinjaman->id,
+        'cicilan_ke' => $i,
+        'pokok' => $pokokPerBulan,
+        'bunga' => $bungaBulanIni,
+        'total_bayar' => $totalBayar,
+        'tanggal_bayar' => Carbon::parse($pinjaman->tanggal_pinjaman)->addMonths($i),
+        'status' => 'belum',
+    ]);
+
+    $totalPinjaman += $totalBayar;
+    $sisaPokok -= $pokokPerBulan;
+}
+
+// update total pinjaman real
+$pinjaman->update([
+    'total_pinjaman' => $totalPinjaman
+]);
+
+        return redirect()->route('pinjaman.detail', $pinjaman->id);
     }
 
     public function update(Request $request, $id)
@@ -130,7 +153,7 @@ $riwayatTagihan = $pinjaman->angsuran()
             'approved_by'      => $request->approved_by,
         ]);
 
-        return $pinjaman;
+        return redirect()->route('pinjaman.detail', $pinjaman->id);
     }
 
     public function destroy($id)

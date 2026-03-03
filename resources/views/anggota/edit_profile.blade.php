@@ -60,15 +60,6 @@
             </label>
         </div>
 
-        {{-- NAMA --}}
-        <div style="padding: 20px;">
-            <input type="text"
-                   name="nama"
-                   value="{{ auth()->user()->nama }}"
-                   placeholder="Nama"
-                   style="width:100%; padding:10px;">
-        </div>
-
         <div class="submit-edit">
             <button type="submit">Simpan</button>
         </div>

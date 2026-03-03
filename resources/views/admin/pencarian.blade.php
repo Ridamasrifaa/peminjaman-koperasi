@@ -21,9 +21,9 @@
         @php
           $pinjamanPertama = $p->pinjaman->first(); // aman karena eager loaded
         @endphp
-        <a href="{{ $pinjamanPertama 
-            ? route('pinjaman.detail', $pinjamanPertama->id) 
-            : route('admin.pinjaman.ajukan') }}" class="user">
+       <a href="{{ $pinjamanPertama 
+    ? route('pinjaman.detail', $pinjamanPertama->id) 
+    : route('admin.pinjaman.ajukan', $p->id) }}" class="user">
           <div class="avatar-search">
             <img src="{{ $p->avatar ?? 'default-avatar.png' }}" alt="avatar">
           </div>

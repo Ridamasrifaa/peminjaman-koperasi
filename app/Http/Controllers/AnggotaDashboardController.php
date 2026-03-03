@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Anggota;
 use App\Models\Pinjaman;
-use App\Models\Cicilan;
+use App\Models\Angsuran;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -77,31 +77,30 @@ public function cicilan()
 
         if ($pinjaman) {
             // cicilan lunas
-            $cicilan = Cicilan::where('kredit_id', $pinjaman->id)
-                                ->where('status', 'lunas')
-                                ->get();
+           $cicilan = Angsuran::where('pinjaman_id', $pinjaman->id)
+    ->where('status', 'lunas')
+    ->get();
 
             // cicilan belum lunas
-            $cicilanSelanjutnya = Cicilan::where('kredit_id', $pinjaman->id)
-                                ->where('status', 'tidak lunas')
+          $cicilanSelanjutnya = Angsuran::where('pinjaman_id', $pinjaman->id)
+                                ->where('status', 'belum')
                                 ->get();
-
             // tagihan saat ini = cicilan pertama yang belum lunas
             $tagihanSekarang = $cicilanSelanjutnya->first();
 
             // riwayat tagihan = semua cicilan (urut berdasarkan bulan_ke)
-            $riwayatTagihan = Cicilan::where('kredit_id', $pinjaman->id)
-                                     ->orderBy('bulan_ke', 'asc')
-                                     ->get();
+           $riwayatTagihan = Angsuran::where('pinjaman_id', $pinjaman->id)
+                         ->orderBy('cicilan_ke', 'asc')
+                         ->get();
         }
     }
 
-    return view('anggota.cicilan', compact(
-        'cicilan',
-        'cicilanSelanjutnya',
-        'tagihanSekarang',
-        'riwayatTagihan'
-    ));
+  return view('anggota.cicilan', [
+    'cicilan' => $cicilan,
+    'tagihanSelanjutnya' => $cicilanSelanjutnya, // <- ganti nama supaya sesuai view
+    'tagihanSekarang' => $tagihanSekarang,
+    'riwayatTagihan' => $riwayatTagihan
+]);
 }
 
     // ================= UPDATE PROFILE =================

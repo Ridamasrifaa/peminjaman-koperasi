@@ -40,18 +40,21 @@
 
     {{-- TAGIHAN SELANJUTNYA --}}
     <h4>Tagihan Selanjutnya</h4>
-
+@if($tagihanSelanjutnya->count() > 0)
     @foreach($tagihanSelanjutnya as $item)
-    <div class="card-green-cu light-cu">
-      <div class="card-title-cu">Total Pembayaran</div>
-      <div class="card-amount-cu">
-        Rp {{ number_format($item->total_bayar, 0, ',', '.') }}
-      </div>
-      <small>
-        Bulan {{ $item->cicilan_ke }}
-      </small>
-    </div>
+        <div class="card-green-cu light-cu">
+            <div class="card-title-cu">Total Pembayaran</div>
+            <div class="card-amount-cu">
+                Rp {{ number_format($item->total_bayar, 0, ',', '.') }}
+            </div>
+            <small>
+                Bulan {{ $item->cicilan_ke }}
+            </small>
+        </div>
     @endforeach
+@else
+    <p>Tidak ada tagihan selanjutnya</p>
+@endif
 
   </div>
 
