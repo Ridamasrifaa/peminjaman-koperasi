@@ -192,4 +192,51 @@ class AnggotaDashboardController extends Controller
 
         return view('anggota.cicilan', compact('pinjaman'));
     }
+
+    public function listPinjaman()
+{
+    $user = auth()->user();
+
+    $anggota = \App\Models\Anggota::where('id_users', $user->id)->first();
+
+    if (!$anggota) {
+        return back()->with('error','Data anggota tidak ditemukan');
+    }
+
+    $pinjamanList = \App\Models\Pinjaman::with('angsuran')
+        ->where('anggota_id', $anggota->id)
+        ->orderBy('created_at','desc')
+        ->get();
+
+    return view('anggota.list_pinjaman', compact('pinjamanList'));
+}
+
+public function cicilanDetail($id)
+{
+    $pinjaman = \App\Models\Pinjaman::with('angsuran')->findOrFail($id);
+
+    $tagihanSekarang = $pinjaman->angsuran()
+        ->where('status','belum')
+        ->orderBy('cicilan_ke')
+        ->first();
+
+    $tagihanSelanjutnya = $pinjaman->angsuran()
+        ->where('status','belum')
+        ->orderBy('cicilan_ke')
+        ->skip(1)
+        ->take(2)
+        ->get();
+
+    $riwayatTagihan = $pinjaman->angsuran()
+        ->where('status','lunas')
+        ->orderBy('cicilan_ke')
+        ->get();
+
+    return view('anggota.cicilan', compact(
+        'pinjaman',
+        'tagihanSekarang',
+        'tagihanSelanjutnya',
+        'riwayatTagihan'
+    ));
+}
 }
