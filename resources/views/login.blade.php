@@ -27,6 +27,9 @@
         <input class="input-login" type="password" name="password" placeholder="Password" required>
 
         <button type="submit" class="button-login">Masuk</button>
+        <a href="{{ route('password.request') }}">
+    Lupa Password?
+</a>
     </form>
 
 </a>

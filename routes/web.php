@@ -10,6 +10,9 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CicilanController;
 use App\Http\Controllers\SimpananController;
 use App\Http\Controllers\AnggotaDashboardController;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 // HOME
 Route::get('/', function () { return view('welcome'); });
@@ -85,3 +88,42 @@ Route::get('/anggota/customer-service', [AnggotaDashboardController::class, 'cus
     Route::get('/anggota/pinjaman', [AnggotaDashboardController::class, 'listPinjaman'])->name('anggota.list.pinjaman');
 
 Route::get('/anggota/cicilan/{id}', [AnggotaDashboardController::class, 'cicilanDetail'])->name('anggota.cicilan.detail');
+Route::get('/forgot-password', function () {
+    return view('auth.forgot-password');
+})->name('password.request');
+Route::post('/forgot-password', function (Illuminate\Http\Request $request) {
+
+    $request->validate([
+        'email' => 'required|email'
+    ]);
+
+    Password::sendResetLink(
+        $request->only('email')
+    );
+
+    return back()->with('status', 'Kalau email terdaftar, link reset sudah dikirim.');
+});
+Route::get('/reset-password/{token}', function ($token) {
+    return view('auth.reset-password', ['token' => $token]);
+})->name('password.reset');
+Route::post('/reset-password', function (Illuminate\Http\Request $request) {
+
+    $request->validate([
+        'token' => 'required',
+        'email' => 'required|email',
+        'password' => 'required|min:6|confirmed',
+    ]);
+
+    Password::reset(
+        $request->only('email', 'password', 'password_confirmation', 'token'),
+        function ($user, $password) {
+            $user->forceFill([
+                'password' => Hash::make($password)
+            ])->save();
+        }
+    );
+
+    return redirect('/login')->with('status', 'Password berhasil diubah!');
+});
+Route::get('/anggota/pinjaman/ajukan/{id}', [AnggotaPinjamanController::class, 'ajukan'])
+    ->name('anggota.pinjaman.ajukan');

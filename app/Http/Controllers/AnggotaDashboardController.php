@@ -167,7 +167,7 @@ class AnggotaDashboardController extends Controller
     public function editProfile()
     {
         $user = auth()->user();
-        return view('anggota.edit_profile', compact('user'));
+        return view('anggota.edit-profile', compact('user'));
     }
 
     public function customerService()
