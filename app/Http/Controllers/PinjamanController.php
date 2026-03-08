@@ -98,35 +98,26 @@ public function cekPinjamanAnggota($id)
    // ===============================
 // BAYAR ANGSURAN
 // ===============================
+
+
 public function bayar($id)
 {
-    // ambil data angsuran
     $angsuran = Angsuran::findOrFail($id);
 
-    // ubah status angsuran jadi lunas
-    $angsuran->update([
-        'status' => 'lunas',
-        'tanggal_bayar' => now()
-    ]);
-
-    // ===============================
-    // AMBIL PINJAMAN TERKAIT
-    // ===============================
-    $pinjaman = Pinjaman::find($angsuran->pinjaman_id);
-
-    // cek apakah masih ada cicilan belum lunas
-    $sisaAngsuran = Angsuran::where('pinjaman_id', $pinjaman->id)
-        ->where('status', 'belum')
-        ->count();
-
-    // jika semua cicilan sudah lunas
-    if ($sisaAngsuran == 0) {
-        $pinjaman->update([
-            'status' => 'lunas'
-        ]);
+    if ($angsuran->status == 'lunas') {
+        return back()->with('info','Cicilan sudah dibayar');
     }
 
-    return back()->with('success', 'Angsuran berhasil dibayar');
+    $now = Carbon::now();
+
+    // Update cicilan → status lunas + bulan & tahun diubah ke hari bayar
+    $angsuran->update([
+    'status' => 'lunas',
+    'tanggal_bayar' => $now,
+    'bulan' => $now->month,
+    'tahun' => $now->year,
+]);
+    return back()->with('success','Pembayaran berhasil.');
 }
 
     // ===============================
@@ -154,28 +145,43 @@ public function bayar($id)
             'total_pinjaman'    => 0,
         ]);
 
-        $pokokPerBulan = $pinjaman->jumlah_pinjaman / $pinjaman->tenor;
-        $sisaPokok = $pinjaman->jumlah_pinjaman;
-        $totalPinjaman = 0;
 
-        for ($i = 1; $i <= $pinjaman->tenor; $i++) {
 
-            $bungaBulanIni = $sisaPokok * ($pinjaman->bunga_persen / 100);
-            $totalBayar = $pokokPerBulan + $bungaBulanIni;
+$sisaPokok = $pinjaman->jumlah_pinjaman;
+$pokokPerBulan = $pinjaman->jumlah_pinjaman / $pinjaman->tenor;
+$startMonth = Carbon::parse($request->tanggal_pinjaman)->month;
+$startYear  = Carbon::parse($request->tanggal_pinjaman)->year;
+$totalPinjaman = 0;
 
-            Angsuran::create([
-                'pinjaman_id'   => $pinjaman->id,
-                'cicilan_ke'    => $i,
-                'pokok'         => $pokokPerBulan,
-                'bunga'         => $bungaBulanIni,
-                'total_bayar'   => $totalBayar,
-                'tanggal_bayar' => Carbon::parse($pinjaman->tanggal_pinjaman)->addMonths($i),
-                'status'        => 'belum',
-            ]);
+for ($i = 0; $i < $pinjaman->tenor; $i++) {
+    $bungaBulanIni = $sisaPokok * ($pinjaman->bunga_persen / 100);
+    $totalBayar = $pokokPerBulan + $bungaBulanIni;
 
-            $totalPinjaman += $totalBayar;
-            $sisaPokok -= $pokokPerBulan;
-        }
+    $bulan = $startMonth + $i;
+    $tahun = $startYear;
+    if ($bulan > 12) {
+        $tahun += intdiv($bulan-1, 12);
+        $bulan = ($bulan-1) % 12 + 1;
+    }
+
+    Angsuran::create([
+        'pinjaman_id'   => $pinjaman->id,
+        'cicilan_ke'    => $i+1,
+        'pokok'         => $pokokPerBulan,
+        'bunga'         => $bungaBulanIni,
+        'total_bayar'   => $totalBayar,
+        'bulan'         => $bulan,
+        'tahun'         => $tahun,
+        'status'        => 'belum',
+        'tanggal_bayar' => null,
+    ]);
+
+    $sisaPokok -= $pokokPerBulan;
+    $totalPinjaman += $totalBayar;
+}
+   
+
+   
 
         $pinjaman->update([
             'total_pinjaman' => $totalPinjaman

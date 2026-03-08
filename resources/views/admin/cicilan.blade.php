@@ -5,6 +5,43 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Riwayat & Cicilan</title>
 @vite('resources/css/style-fe.css')
+<style>
+/* =========================
+   NOTIF CARD CICILAN
+========================= */
+
+.card-notif {
+    padding: 14px 18px;
+    border-radius: 12px;
+    margin: 15px 0;
+    font-weight: 500;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    animation: fadeSlide 0.3s ease-in-out;
+}
+
+.card-notif.success {
+    background: #E6F7EC;
+    color: #1E7E34;
+    border-left: 5px solid #28A745;
+}
+
+.card-notif.info {
+    background: #E8F4FD;
+    color: #0C5460;
+    border-left: 5px solid #17A2B8;
+}
+
+@keyframes fadeSlide {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>
 </head>
 
 <body class="body-cicilan">
@@ -25,6 +62,18 @@
 <div class="section-cicilan">
 <h4>Tagihan Saat Ini</h4>
 
+@if(session('success'))
+<div class="card-notif success">
+    {{ session('success') }}
+</div>
+@endif
+
+@if(session('info'))
+<div class="card-notif info">
+    {{ session('info') }}
+</div>
+@endif
+
 @if($tagihanSekarang)
 <div class="card-green">
   <div class="card-row">
@@ -33,16 +82,23 @@
       <div class="card-amount">
         Rp {{ number_format($tagihanSekarang->total_bayar,0,',','.') }}
       </div>
-      <small>
-        {{ \Carbon\Carbon::parse($tagihanSekarang->tanggal_bayar)->format('d M Y') }}
-      </small>
+  @php
+$bulanTagihan = \Carbon\Carbon::now()->startOfMonth()->addMonths($tagihanSekarang->cicilan_ke - 1);
+@endphp
+
+<small>
+Pembayaran {{ $tagihanSekarang->cicilan_ke }} • {{ $bulanTagihan->format('M Y') }}
+</small>
     </div>
 
-    <!-- Tombol Bayar langsung -->
-    <form action="{{ route('angsuran.bayar', $tagihanSekarang->id) }}" method="POST">
-      @csrf
-      <button type="submit" class="card-bayar">Bayar</button>
-    </form>
+    @if($tagihanSekarang->status == 'belum')
+<form action="{{ route('angsuran.bayar', $tagihanSekarang->id) }}" method="POST">
+  @csrf
+  <button type="submit" class="card-bayar">Bayar</button>
+</form>
+@else
+<button class="card-bayar" disabled>Sudah Dibayar</button>
+@endif
 
   </div>
 </div>
@@ -57,9 +113,13 @@
       <div class="card-amount">
         Rp {{ number_format($t->total_bayar,0,',','.') }}
       </div>
-      <small>
-        {{ \Carbon\Carbon::parse($t->tanggal_bayar)->format('d M Y') }}
-      </small>
+   @php
+$bulanTagihan = \Carbon\Carbon::now()->startOfMonth()->addMonths($t->cicilan_ke - 1);
+@endphp
+
+<small>
+Pembayaran {{ $t->cicilan_ke }} • {{ $bulanTagihan->format('M Y') }}
+</small>
     </div>
     @endforeach
 @else
@@ -78,10 +138,10 @@
       Rp {{ number_format($a->total_bayar,0,',','.') }}
     </div>
   </div>
-  <div class="bulan">
-      Bulan {{ $a->cicilan_ke }} <br>
-      {{ \Carbon\Carbon::parse($a->tanggal_bayar)->format('d M Y') }}
-  </div>
+ <div class="bulan">
+    Pembayaran ke-{{ $a->cicilan_ke }} <br>
+    {{ $a->tanggal_bayar ? \Carbon\Carbon::parse($a->tanggal_bayar)->format('d M Y') : '-' }}
+</div>
 </div>
 @empty
     <p>Belum ada riwayat pembayaran</p>
