@@ -31,7 +31,7 @@
         Rp {{ number_format($tagihanSekarang->total_bayar, 0, ',', '.') }}
       </div>
       <small>
-        Bulan {{ $tagihanSekarang->cicilan_ke }}
+        Pembayaran {{ $tagihanSekarang->cicilan_ke }}
       </small>
     </div>
     @else
@@ -48,7 +48,7 @@
                 Rp {{ number_format($item->total_bayar, 0, ',', '.') }}
             </div>
             <small>
-                Bulan {{ $item->cicilan_ke }}
+                Pembayaran {{ $item->cicilan_ke }}
             </small>
         </div>
     @endforeach
@@ -71,7 +71,7 @@
         </div>
       </div>
       <div class="bulan-cu">
-        Bulan {{ $item->cicilan_ke }}
+        Pembayaran {{ $item->cicilan_ke }}
       </div>
     </div>
     @empty
