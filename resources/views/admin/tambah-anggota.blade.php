@@ -18,12 +18,12 @@
     </div>
     <h6>Tambah Anggota</h6>
     <div class="icon-btn">
-        <img src="{{ asset('assets/images/smk.png') }}" alt="Profile" class="profile-img">
+        <img src="{{ asset('img/logo/smk.png') }}" style="width: 22px; height:auto;">
     </div>
 </div>
 
 <div class="container">
-  <img src="{{ asset('assets/images/logo.png') }}" alt="Logo" class="logo-tambah">
+  <img src="{{ asset('img/logo/logo.png') }}" style="width: 150px; height:auto; margin-left: 40%;">
 
   <form id="formAnggota" action="{{ route('anggota.store') }}" method="POST">
       @csrf

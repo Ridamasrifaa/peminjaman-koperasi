@@ -125,5 +125,5 @@ Route::post('/reset-password', function (Illuminate\Http\Request $request) {
 
     return redirect('/login')->with('status', 'Password berhasil diubah!');
 });
-Route::get('/anggota/pinjaman/ajukan/{id}', [AnggotaPinjamanController::class, 'ajukan'])
+Route::get('/anggota/pinjaman/ajukan/{id}', [PinjamanController::class, 'ajukan'])
     ->name('anggota.pinjaman.ajukan');
