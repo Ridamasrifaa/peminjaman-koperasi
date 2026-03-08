@@ -19,6 +19,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'foto',
     ];
 
     /**
@@ -47,4 +48,11 @@ class User extends Authenticatable
     {
         return $this->hasOne(Kredit::class);
     }
+
+    public function getAvatarUrlAttribute()
+    {
+        return $this->foto
+            ? asset('storage/' . $this->foto)
+            : asset('img/default-avatar.png');
+    }   
 }

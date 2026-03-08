@@ -27,7 +27,7 @@
         <a href="{{ route('admin.cek.pinjaman', $p->id) }}" class="user">
 
           <div class="avatar-search">
-            <img src="{{ $p->avatar ?? 'default-avatar.png' }}" alt="avatar">
+            <img src="{{ $p->avatar_url }}" alt="avatar">
           </div>
 
           <div class="info">
@@ -40,10 +40,6 @@
       @empty
         <p>Tidak ada data.</p>
       @endforelse
-    </div>
-
-    <div class="empty">
-      <img src="/assets/images/pencarian.png" class="search-icon">
     </div>
   </div>
 

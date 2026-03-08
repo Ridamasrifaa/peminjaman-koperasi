@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Anggota;
 
 class ProfileController extends Controller
 {
@@ -18,26 +19,44 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
 
-        // validasi input
+        // Validasi input
         $request->validate([
+            'nama'   => 'required|string|max:100',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // jika ada upload baru
-        if($request->hasFile('avatar')){
-            // hapus foto lama jika ada
-            if($user->avatar){
-                Storage::delete('public/avatars/'.$user->avatar);
+        // =========================
+        // UPDATE NAMA DI USERS
+        // =========================
+        $user->nama = $request->nama;
+
+        // =========================
+        // UPDATE FOTO
+        // =========================
+        if ($request->hasFile('avatar')) {
+
+            // Hapus foto lama jika ada
+            if ($user->foto) {
+                Storage::disk('public')->delete($user->foto);
             }
 
-            $file = $request->file('avatar');
-            $filename = time().'_'.$file->getClientOriginalName();
-            $file->storeAs('public/avatars', $filename);
+            // Simpan file ke storage/app/public/profile
+            $path = $request->file('avatar')->store('profile', 'public');
 
-            $user->avatar = $filename;
+            // Simpan path ke database
+            $user->foto = $path;
         }
 
         $user->save();
+
+        // =========================
+        // UPDATE NAMA DI TABEL ANGGOTA
+        // =========================
+        $anggota = Anggota::where('id_users', $user->id)->first();
+        if ($anggota) {
+            $anggota->nama = $request->nama;
+            $anggota->save();
+        }
 
         return redirect('/admin/profile')->with('success', 'Profile berhasil diupdate!');
     }
