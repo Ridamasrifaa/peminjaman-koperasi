@@ -27,20 +27,25 @@
 
   <form id="formAnggota" action="{{ route('anggota.store') }}" method="POST">
       @csrf
-      <div class="mb-3">
-          <label class="form-label fw-semibold">Nama Lengkap</label>
-          <input type="text" name="nama" class="form-control" placeholder="Masukan Nama Lengkap" required>
-      </div>
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Nama Lengkap</label>
+            <input type="text" name="nama" class="form-control" placeholder="Masukan Nama Lengkap" required>
+        </div>
 
-    <div class="mb-3">
-    <label class="form-label fw-semibold">Email</label>
-    <input type="email" name="email" class="form-control" placeholder="Masukan Email" required>
-</div>
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Email</label>
+            <input type="email" name="email" class="form-control" placeholder="Masukan Email" required>
+        </div>
 
-      <div class="mb-3">
-          <label class="form-label fw-semibold">Nomor Telepon</label>
-          <input type="tel" name="no_hp" class="form-control" placeholder="Masukan Nomor Telepon" required>
-      </div>
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Nomor Telepon</label>
+            <input type="tel" name="no_hp" class="form-control" placeholder="Masukan Nomor Telepon" required>
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Password</label>
+            <input type="password" name="password" class="form-control" placeholder="Masukan Password" required>
+        </div>
 
       <!-- user login -->
       <input type="hidden" name="id_users" value="{{ auth()->id() }}">

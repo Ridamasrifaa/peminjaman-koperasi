@@ -149,7 +149,9 @@ Pembayaran {{ $t->cicilan_ke }} • {{ $bulanTagihan->format('M Y') }}
 </div>
 
 <a href="{{ route('admin.pinjaman.ajukan', $pinjaman->anggota_id) }}" class="fab-plus">
-    <img src="{{ asset('assets/images/plus.png') }}" width="70px" height="70px">
+    
+    <img src="{{ asset('img/plus.png') }}">
+    
 </a>
 
 </div>
