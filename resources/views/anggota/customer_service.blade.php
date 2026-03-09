@@ -20,20 +20,20 @@
     <div class="cs-wrapper">
 
       <div class="cs-item">
-        <label>Pak Fikri</label>
+        <label>Suminar</label>
         <a href="https://wa.me/628115204504?text={{ urlencode('Halo admin, saya '.auth()->user()->nama.' ingin mengajukan cicilan') }}" 
            target="_blank" class="cs-box" style="color:black; text-decoration:none; display:flex; align-items:center; gap:8px;">
           <i data-feather="phone"></i>
-          <span>082115204504</span>
+          <span>081323025049</span>
         </a>
       </div>
 
       <div class="cs-item">
-        <label>Pak Ali</label>
+        <label>Deni</label>
         <a href="https://wa.me/628115204504?text={{ urlencode('Halo admin, saya '.auth()->user()->nama.' ingin mengajukan cicilan') }}" 
            target="_blank" class="cs-box" style="color:black; text-decoration:none; display:flex; align-items:center; gap:8px;">
           <i data-feather="phone"></i>
-          <span>082316504650</span>
+          <span>081323025049</span>
         </a>
       </div>
 
