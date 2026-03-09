@@ -29,11 +29,10 @@
           <div class="avatar-search">
             <img src="{{ $p->avatar_url }}" alt="avatar">
           </div>
-
-          <div class="info">
-            <strong>{{ $p->nama }}</strong>
-            <span>{{ substr($p->no_hp, 0, 2) }}********</span>
-          </div>
+<div class="info">
+  <strong>{{ $p->nama }}</strong>
+  <span>{{ $p->no_hp }}</span>
+</div>
 
         </a>
 
