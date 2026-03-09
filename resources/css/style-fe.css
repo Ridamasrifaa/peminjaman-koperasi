@@ -1908,7 +1908,8 @@ transition: 0.5s;
   min-height:100vh;
   background:#fff;
   padding-bottom:70px;
-  position: fixed;
+  position: relative;
+  margin:0 auto;
 }
 
 .content-search{
@@ -1924,14 +1925,16 @@ margin-top: 10px;
     }
 
     .search-bar {
-      margin-top: 0%;
       background: #e0e0e0;
       border-radius: 15px;
       display: flex;
+      width: 100%;
       align-items: center;
       padding: 8px 14px;
-      max-width: 400px;
+      max-width: 366px;
       opacity: 100%;
+      z-index: 1000;
+      position: fixed;
     }
 
     .search-bar input {

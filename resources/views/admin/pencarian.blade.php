@@ -27,23 +27,18 @@
         <a href="{{ route('admin.cek.pinjaman', $p->id) }}" class="user">
 
           <div class="avatar-search">
-            <img src="{{ $p->avatar ?? 'default-avatar.png' }}" alt="avatar">
+            <img src="{{ $p->avatar_url }}" alt="avatar">
           </div>
-
-          <div class="info">
-            <strong>{{ $p->nama }}</strong>
-            <span>{{ substr($p->no_hp, 0, 2) }}********</span>
-          </div>
+<div class="info">
+  <strong>{{ $p->nama }}</strong>
+  <span>{{ $p->no_hp }}</span>
+</div>
 
         </a>
 
       @empty
         <p>Tidak ada data.</p>
       @endforelse
-    </div>
-
-    <div class="empty">
-      <img src="/assets/images/pencarian.png" class="search-icon">
     </div>
   </div>
 

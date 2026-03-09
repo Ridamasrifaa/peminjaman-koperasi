@@ -3,22 +3,22 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Pinjaman;
-use App\Models\User;
+use App\Models\Anggota;
 
 class PencarianController extends Controller
 {
+    public function index(Request $request)
+    {
+        $query = Anggota::with(['user', 'pinjaman']);
 
-public function index(Request $request)
-{
-    $query = User::with('pinjaman');
+        if ($request->q) {
+            $query->whereHas('user', function ($q) use ($request) {
+                $q->where('nama', 'like', '%' . $request->q . '%');
+            });
+        }
 
-    if ($request->q) {
-        $query->where('nama', 'like', '%' . $request->q . '%');
+        $anggota = $query->get();
+
+        return view('admin.pencarian', compact('anggota'));
     }
-
-    $anggota = $query->get();
-
-    return view('pencarian', compact('anggota'));
-}
 }

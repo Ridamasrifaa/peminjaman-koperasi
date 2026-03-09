@@ -14,7 +14,10 @@
   <div class="header-cu">
     <div class="back-btn-cu">
       <a href="{{ route('anggota.dashboard') }}">
-        ←
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                  xmlns="http://www.w3.org/2000/svg">
+                <path d="M7.825 13L13.425 18.6L12 20L4 12L12 4L13.425 5.4L7.825 11H20V13H7.825Z" fill="#1D1B20"/>
+            </svg>
       </a>
     </div>
     <div>Riwayat & Cicilan</div>
@@ -31,7 +34,7 @@
         Rp {{ number_format($tagihanSekarang->total_bayar, 0, ',', '.') }}
       </div>
       <small>
-        Bulan {{ $tagihanSekarang->cicilan_ke }}
+        Pembayaran {{ $tagihanSekarang->cicilan_ke }}
       </small>
     </div>
     @else
@@ -48,7 +51,7 @@
                 Rp {{ number_format($item->total_bayar, 0, ',', '.') }}
             </div>
             <small>
-                Bulan {{ $item->cicilan_ke }}
+                Pembayaran {{ $item->cicilan_ke }}
             </small>
         </div>
     @endforeach
@@ -71,7 +74,7 @@
         </div>
       </div>
       <div class="bulan-cu">
-        Bulan {{ $item->cicilan_ke }}
+        Pembayaran {{ $item->cicilan_ke }}
       </div>
     </div>
     @empty
