@@ -76,21 +76,35 @@ class AnggotaController extends Controller
         }
     }
 
+    // EDIT (TAMBAHAN)
+    public function edit($id)
+    {
+        $anggota = Anggota::findOrFail($id);
+        return view('admin.edit_anggota', compact('anggota'));
+    }
+
     // UPDATE
     public function update(Request $request, $id)
     {
-        $anggota = Anggota::find($id);
-        $anggota->update($request->all());
+        $anggota = Anggota::findOrFail($id);
 
-        return $anggota;
+        $anggota->update([
+            'nama' => $request->nama,
+            'no_hp' => $request->no_hp,
+            'email' => $request->email
+        ]);
+
+        return redirect('/admin/pencarian')
+            ->with('success','Data berhasil diupdate');
     }
 
     // DELETE
     public function destroy($id)
     {
-        $anggota = Anggota::find($id);
+        $anggota = Anggota::findOrFail($id);
         $anggota->delete();
 
-        return response()->json(['message' => 'Data berhasil dihapus']);
+        return redirect('/admin/pencarian')
+            ->with('success','Data berhasil dihapus');
     }
 }

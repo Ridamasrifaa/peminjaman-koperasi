@@ -127,3 +127,9 @@ Route::post('/reset-password', function (Illuminate\Http\Request $request) {
 });
 Route::get('/anggota/pinjaman/ajukan/{id}', [PinjamanController::class, 'ajukan'])
     ->name('anggota.pinjaman.ajukan');
+
+Route::get('/admin/anggota/{id}/edit',[AnggotaController::class,'edit'])->name('anggota.edit');
+
+Route::put('/admin/anggota/{id}',[AnggotaController::class,'update'])->name('anggota.update');
+
+Route::delete('/admin/anggota/{id}',[AnggotaController::class,'destroy'])->name('anggota.destroy');
