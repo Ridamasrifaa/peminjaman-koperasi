@@ -51,7 +51,7 @@ class AnggotaController extends Controller
             $user = User::create([
                 'nama'     => $validated['nama'],
                 'email'    => $validated['email'],
-                'password' => Hash::make('default123'),
+                'password' =>  Hash::make($request->password),
                 'role'     => 'anggota',
             ]);
 
