@@ -2041,3 +2041,36 @@ margin-top: 10px;
     .bottom-nav-search a.active svg{
       stroke:#fff;
     }
+
+    .user{
+  position: relative;
+}
+
+.aksi-user{
+  position:absolute;
+  top:8px;
+  right:8px;
+  display:flex;
+  gap:10px;
+  z-index:10;
+}
+
+.aksi-user a,
+.aksi-user button{
+  background:none;
+  border:none;
+  cursor:pointer;
+  color:#333;
+}
+
+.aksi-user svg{
+  width:18px;
+  height:18px;
+  margin-top: 25px;
+}
+
+.user-link{
+  display:flex;
+  align-items:center;
+  text-decoration:none;
+}
