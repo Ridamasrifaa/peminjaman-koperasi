@@ -130,32 +130,31 @@ class AnggotaDashboardController extends Controller
 
 
     // ================= UPDATE PROFILE =================
-    public function updateProfile(Request $request)
-    {
-        $user = auth()->user();
+   public function updateProfile(Request $request)
+{
+    $user = auth()->user();
 
-        $request->validate([
-            'nama' => 'required',
-            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
-        ]);
+    $request->validate([
+        'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
+    ]);
 
-        $user->nama = $request->nama;
+    if ($request->hasFile('foto')) {
 
-        if ($request->hasFile('foto')) {
-
-            if ($user->foto) {
-                Storage::delete('public/' . $user->foto);
-            }
-
-            $path = $request->file('foto')->store('profile', 'public');
-            $user->foto = $path;
+        if ($user->foto) {
+            Storage::delete('public/' . $user->foto);
         }
 
-        $user->save();
-
-        return redirect()->route('anggota.edit_profile')
-               ->with('success', 'Profile berhasil diupdate');
+        $path = $request->file('foto')->store('profile', 'public');
+        $user->foto = $path;
     }
+
+    $user->save();
+
+    return redirect()->route('anggota.edit_profile')
+           ->with('success', 'Profile berhasil diupdate');
+}
+
+     
 
 
     public function profile()
