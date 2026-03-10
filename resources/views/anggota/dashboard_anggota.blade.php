@@ -12,7 +12,7 @@
 <div class="app-ds">
 
   @php
-      $nomorAdmin = "628123456789"; // 🔥 GANTI NOMOR ADMIN DI SINI
+      $nomorAdmin = "628123456789"; 
   @endphp
 
   <div class="header-ds">
@@ -54,9 +54,7 @@
           <small>Cicilan :</small>
           <b>
             <a href="{{ route('anggota.list.pinjaman') }}">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path d="M3 18V16H21V18H3ZM3 13V11H21V13H3ZM3 8V6H21V8H3Z" fill="#FEF7FF"/>
-              </svg>
+              <img src="{{ asset('img/logo/cicilan.png') }}" alt="Foto" style="width: 50px">
             </a>
           </b>
         </div>

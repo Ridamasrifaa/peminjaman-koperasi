@@ -41,7 +41,7 @@ class AnggotaController extends Controller
             'nama'  => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'no_hp' => 'required|string|max:20',
-            'password' => 'required|min:6'
+            'password' => 'required|min:8'
         ]);
 
         DB::beginTransaction();
@@ -51,7 +51,7 @@ class AnggotaController extends Controller
             $user = User::create([
                 'nama'     => $validated['nama'],
                 'email'    => $validated['email'],
-                'password' => Hash::make($request->password),
+                'password' => Hash::make('default123'),
                 'role'     => 'anggota',
             ]);
 
