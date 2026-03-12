@@ -5,6 +5,17 @@
   <title>Login Koperasi</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   @vite('resources/css/style-fe.css')
+  <style>
+.forgot-password{
+color:#FFC107;
+text-decoration:none;
+font-weight:500;
+}
+
+.forgot-password:hover{
+color:#ffca2c;
+}
+</style>
 </head>
 
 <body class="body-login">
@@ -54,7 +65,7 @@ style="position:absolute; right:15px; top:50%; transform:translateY(-50%); curso
 </div>
 @enderror
 
-<a href="{{ route('password.request') }}">Lupa Password?</a>
+<a href="{{ route('password.request') }}" class="forgot-password">Lupa Password?</a>
 
 <button type="submit" class="button-login">Masuk</button>
 
@@ -66,13 +77,13 @@ style="position:absolute; right:15px; top:50%; transform:translateY(-50%); curso
 </body>
 <script>
 function togglePassword() {
-    const password = document.getElementById("password");
+const password = document.getElementById("password");
 
-    if (password.type === "password") {
-        password.type = "text";
-    } else {
-        password.type = "password";
-    }
+if (password.type === "password") {
+password.type = "text";
+} else {
+password.type = "password";
+}
 }
 </script>
 </html>

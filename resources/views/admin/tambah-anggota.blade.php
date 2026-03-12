@@ -24,7 +24,15 @@
 
 <div class="container">
   <img src="{{ asset('img/logo/logo.png') }}" style="width: 150px; height:auto; margin-left: 40%;">
-
+@if ($errors->any())
+<div class="alert alert-danger">
+    <ul class="mb-0">
+        @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+        @endforeach
+    </ul>
+</div>
+@endif
   <form id="formAnggota" action="{{ route('anggota.store') }}" method="POST">
       @csrf
         <div class="mb-3">
@@ -42,10 +50,23 @@
             <input type="tel" name="no_hp" class="form-control" placeholder="Masukan Nomor Telepon" required>
         </div>
         
-        <div class="mb-3">
-            <label class="form-label fw-semibold">Password</label>
-            <input type="password" name="password" class="form-control" placeholder="Masukan Password" required>
+      <div class="mb-3">
+    <label class="form-label fw-semibold">Password</label>
+
+    <input 
+        type="password"
+        name="password"
+        class="form-control @error('password') is-invalid @enderror"
+        placeholder="Masukan Password"
+        required
+    >
+
+    @error('password')
+        <div class="invalid-feedback">
+            {{ $message }}
         </div>
+    @enderror
+</div>
 
       <!-- user login -->
       <input type="hidden" name="id_users" value="{{ auth()->id() }}">
