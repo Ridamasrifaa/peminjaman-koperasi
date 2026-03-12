@@ -50,7 +50,7 @@
                     <span style="margin-left: 10px; font-weight: 500;">
                         {{ auth()->user()->email }}
                     </span>
-                </div>
+                </div><br><br><br><br><br><br><br>
 
                 <!-- tombol keluar -->
                 <button onclick="openModal()" class="keluar-pu mt-3">

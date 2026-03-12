@@ -12,7 +12,7 @@
 <div class="mobile-ajukan">
 
 <div class="header-ajukan">
-  <a href="{{ url()->previous() }}" class="panah-ajukan">
+<a href="javascript:history.back()" class="panah-ajukan">
     <i data-feather="arrow-left"></i>
   </a>
   <span>Ajukan Pinjaman</span>
@@ -25,7 +25,7 @@
 <small>Masukan Jumlah Pinjaman</small>
 
 <div class="amount-box">
-<input type="number" id="jumlah" name="jumlah_pinjaman" placeholder="Rp0" max="10000000" required>
+<input type="text" id="jumlah" name="jumlah_pinjaman" placeholder="Rp0" inputmode="numeric" required>
 </div>
 
 <small>Maksimal Pinjaman Rp10.000.000</small>
@@ -64,7 +64,26 @@
 </div>
 <script>
 feather.replace();
+const jumlahInput = document.getElementById("jumlah");
 
+jumlahInput.addEventListener("input", function () {
+
+let angka = this.value.replace(/[^0-9]/g, "");
+
+if (angka.length === 0) {
+this.value = "";
+hitung();
+return;
+}
+
+if (parseInt(angka) > 10000000) {
+angka = "10000000";
+}
+
+this.value = "Rp " + parseInt(angka).toLocaleString("id-ID");
+
+hitung();
+});
 let tenor = 0;
 const bunga = 2; // 2%
 
@@ -77,7 +96,9 @@ function setTenor(bulan) {
 document.getElementById('jumlah').addEventListener('input', hitung);
 
 function hitung() {
-    let jumlah = parseFloat(document.getElementById('jumlah').value);
+   let jumlah = parseFloat(
+document.getElementById('jumlah').value.replace(/[^0-9]/g, "")
+);
     if (!jumlah || tenor === 0) return;
 
     let pokokPerBulan = jumlah / tenor;
