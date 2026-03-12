@@ -26,6 +26,7 @@ class Angsuran extends Model
     // ===============================
     public function pinjaman()
     {
-        return $this->belongsTo(Pinjaman::class, 'pinjaman_id');
+       return $this->belongsTo(Pinjaman::class, 'pinjaman_id');
     }
+    
 }

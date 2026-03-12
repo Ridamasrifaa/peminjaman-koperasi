@@ -37,23 +37,32 @@ class AnggotaController extends Controller
     // POST /admin/anggota
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'nama'  => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'no_hp' => 'required|string|max:20',
-            'password' => 'required|min:8'
-        ]);
-
+       $validated = $request->validate([
+    'nama'  => 'required|string|max:255',
+    'email' => 'required|email|unique:users,email',
+   'no_hp' => 'required|numeric|digits_between:10,15',
+    'password' => 'required|min:8'
+],[
+    'nama.required' => 'Nama wajib diisi',
+    'email.required' => 'Email wajib diisi',
+    'email.email' => 'Format email tidak valid',
+    'email.unique' => 'Email sudah digunakan',
+    'no_hp.numeric' => 'Nomor telepon harus berupa angka',
+'no_hp.digits_between' => 'Nomor telepon harus 10-15 digit',
+    'password.required' => 'Password wajib diisi',
+    'password.min' => 'Password minimal 8 karakter'
+]);
         DB::beginTransaction();
 
         try {
 
-            $user = User::create([
-                'nama'     => $validated['nama'],
-                'email'    => $validated['email'],
-                'password' => Hash::make('default123'),
-                'role'     => 'anggota',
-            ]);
+           
+        $user = User::create([
+    'nama'     => $validated['nama'],
+    'email'    => $validated['email'],
+    'password' => Hash::make($validated['password']),
+    'role'     => 'anggota',
+]);
 
             // Buat record anggota
             Anggota::create([
@@ -99,12 +108,31 @@ class AnggotaController extends Controller
     }
 
     // DELETE
-    public function destroy($id)
-    {
-        $anggota = Anggota::findOrFail($id);
-        $anggota->delete();
+public function destroy($id)
+{
+    $anggota = Anggota::findOrFail($id);
 
-        return redirect('/admin/pencarian')
-            ->with('success','Data berhasil dihapus');
+    foreach ($anggota->pinjaman as $pinjaman) {
+
+        $belumLunas = $pinjaman->angsuran()
+            ->where('status','!=','lunas')
+            ->exists();
+
+        if ($belumLunas) {
+            return redirect('/admin/pencarian')
+            ->with('error','Anggota tidak bisa dihapus karena masih memiliki pinjaman');
+        }
     }
+
+    foreach ($anggota->pinjaman as $pinjaman) {
+        $pinjaman->angsuran()->delete();
+    }
+
+    $anggota->pinjaman()->delete();
+    $anggota->delete();
+
+    return redirect('/admin/pencarian')
+        ->with('success','Data berhasil dihapus');
+}
+  
 }

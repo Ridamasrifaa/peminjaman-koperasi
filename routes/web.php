@@ -133,3 +133,4 @@ Route::get('/admin/anggota/{id}/edit',[AnggotaController::class,'edit'])->name('
 Route::put('/admin/anggota/{id}',[AnggotaController::class,'update'])->name('anggota.update');
 
 Route::delete('/admin/anggota/{id}',[AnggotaController::class,'destroy'])->name('anggota.destroy');
+
