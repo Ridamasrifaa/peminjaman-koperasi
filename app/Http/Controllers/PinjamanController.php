@@ -127,17 +127,18 @@ public function bayar($id)
     {
         $request->validate([
             'anggota_id'        => 'required|integer',
-            'jumlah_pinjaman'   => 'required|numeric',
+            'jumlah_pinjaman' => 'required',
             'tenor'             => 'required|integer',
             'tanggal_pinjaman'  => 'required|date',
         ]);
 
+        $jumlah = str_replace(['Rp', '.', ' '], '', $request->jumlah_pinjaman);
         $bunga = 2;
 
         $pinjaman = Pinjaman::create([
             'anggota_id'        => $request->anggota_id,
             'approved_by'       => null,
-            'jumlah_pinjaman'   => $request->jumlah_pinjaman,
+            'jumlah_pinjaman'   => $jumlah,
             'bunga_persen'      => $bunga,
             'tenor'             => $request->tenor,
             'status'            => 'approved',
@@ -196,7 +197,7 @@ for ($i = 0; $i < $pinjaman->tenor; $i++) {
     public function update(Request $request, $id)
     {
         $request->validate([
-            'jumlah_pinjaman'  => 'required|numeric',
+            'jumlah_pinjaman'  => 'required',
             'tenor'            => 'required|integer',
             'status'           => 'required|string',
             'tanggal_pinjaman' => 'required|date',

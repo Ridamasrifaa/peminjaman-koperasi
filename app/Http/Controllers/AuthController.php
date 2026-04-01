@@ -6,46 +6,52 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\Anggota;
 
 class AuthController extends Controller
 {
-    public function login(Request $request)
-    {
-        // validasi input
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
-        ]);
+  public function login(Request $request)
+{
+    $request->validate([
+        'email' => 'required|email',
+        'password' => 'required'
+    ]);
 
-        // cari user berdasarkan email
-        $user = User::where('email', $request->email)->first();
+    $user = User::where('email', $request->email)->first();
 
-        // jika email tidak ditemukan
-        if (!$user) {
-            return back()->withErrors([
-                'email' => 'Email tidak ditemukan'
-            ])->withInput();
-        }
-
-        // jika password salah
-        if (!Hash::check($request->password, $user->password)) {
-            return back()->withErrors([
-                'password' => 'Password salah'
-            ])->withInput();
-        }
-
-        // login user
-        Auth::login($user);
-        $request->session()->regenerate();
-
-        // redirect berdasarkan role
-        if ($user->role === 'admin' || $user->role === 'sekertaris') {
-            return redirect('/admin/pencarian');
-        } elseif ($user->role === 'anggota') {
-            return redirect('/anggota');
-        }
-
-        // fallback jika role tidak dikenali
-        return redirect('/');
+    if (!$user) {
+        return back()->withErrors([
+            'email' => 'Email tidak ditemukan'
+        ])->withInput();
     }
+
+    if (!Hash::check($request->password, $user->password)) {
+        return back()->withErrors([
+            'password' => 'Password salah'
+        ])->withInput();
+    }
+
+    // 🔥 CEK APAKAH MASIH PUNYA DATA ANGGOTA
+    if ($user->role === 'anggota') {
+        $anggota = Anggota::where('id_users', $user->id)->first();
+
+        if (!$anggota) {
+            return back()->withErrors([
+                'email' => 'Akun sudah tidak terdaftar sebagai anggota'
+            ]);
+        }
+    }
+
+    // login user
+    Auth::login($user);
+    $request->session()->regenerate();
+
+    if ($user->role === 'admin' || $user->role === 'sekertaris') {
+        return redirect('/admin/pencarian');
+    } elseif ($user->role === 'anggota') {
+        return redirect('/anggota');
+    }
+
+    return redirect('/');
+}
 }

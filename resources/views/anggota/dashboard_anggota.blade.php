@@ -91,9 +91,9 @@
 </div>
 
 <div class="bottom-nav-ds">
-    <a href="{{ route('anggota.dashboard') }}"><i data-feather="home"></i></a>
-    <a href="{{ route('anggota.profile') }}"><i data-feather="user"></i></a>
-    <a href="#logoutModal" onclick="openModal()"><i data-feather="log-out"></i></a>
+  <a href="{{ route('anggota.dashboard') }}"><i data-feather="home"></i></a>
+  <a href="{{ route('anggota.profile') }}"><i data-feather="user"></i></a>
+  <a href="#logoutModal" onclick="openModal()"><i data-feather="log-out"></i></a>
 </div>
 
 <div id="logoutModal" class="modal-backdrop-custom-pu">
