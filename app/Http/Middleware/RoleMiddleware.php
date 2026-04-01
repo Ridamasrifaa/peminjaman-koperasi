@@ -17,7 +17,6 @@ class RoleMiddleware
 
         $user = Auth::user();
 
-        // normalize semua role ke lowercase untuk menghindari masalah casing
         $userRole = strtolower($user->role);
         $allowedRoles = array_map('strtolower', $roles);
 

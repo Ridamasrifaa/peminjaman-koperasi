@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Simpanan extends Model
 {
-    //
 
     use HasFactory;
 

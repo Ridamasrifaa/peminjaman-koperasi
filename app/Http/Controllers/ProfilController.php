@@ -19,39 +19,29 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
 
-        // Validasi input
+    
         $request->validate([
             'nama'   => 'required|string|max:100',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // =========================
-        // UPDATE NAMA DI USERS
-        // =========================
+    
         $user->nama = $request->nama;
 
-        // =========================
-        // UPDATE FOTO
-        // =========================
+    
         if ($request->hasFile('avatar')) {
 
-            // Hapus foto lama jika ada
             if ($user->foto) {
                 Storage::disk('public')->delete($user->foto);
             }
 
-            // Simpan file ke storage/app/public/profile
             $path = $request->file('avatar')->store('profile', 'public');
 
-            // Simpan path ke database
             $user->foto = $path;
         }
 
         $user->save();
 
-        // =========================
-        // UPDATE NAMA DI TABEL ANGGOTA
-        // =========================
         $anggota = Anggota::where('id_users', $user->id)->first();
         if ($anggota) {
             $anggota->nama = $request->nama;

@@ -6,9 +6,7 @@
 <title>Riwayat & Cicilan</title>
 @vite('resources/css/style-fe.css')
 <style>
-/* =========================
-   NOTIF CARD CICILAN
-========================= */
+
 
 .card-notif {
     padding: 14px 18px;

@@ -16,11 +16,6 @@ class Anggota extends Model
         'id_users'
     ];
 
-    /*
-    |--------------------------------------------------------------------------
-    | RELATIONSHIP
-    |--------------------------------------------------------------------------
-    */
 
     public function user()
     {
@@ -32,13 +27,7 @@ class Anggota extends Model
         return $this->hasMany(\App\Models\Pinjaman::class, 'anggota_id');
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | ACCESSOR
-    |--------------------------------------------------------------------------
-    */
 
-    // Ambil avatar dari tabel users
     public function getAvatarUrlAttribute()
     {
         return ($this->user && $this->user->foto)
@@ -46,7 +35,6 @@ class Anggota extends Model
             : asset('img/default-avatar.png');
     }
 
-    // Ambil nama dari tabel users (BIAR GAK DOUBLE DATA)
     public function getNamaLengkapAttribute()
     {
         return $this->user->nama ?? $this->nama;

@@ -71,7 +71,6 @@
 </div>
 
 
-<!-- MODAL LOGOUT -->
 <div id="logoutModal" class="modal-backdrop-custom-pu" style="display:none;">
   <div class="modal-box-pu">
 

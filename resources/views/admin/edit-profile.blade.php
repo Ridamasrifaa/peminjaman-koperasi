@@ -53,7 +53,7 @@
 </div>
 
 <script>
-    // Preview gambar
+    
     const imageInput = document.getElementById('imageInput');
     const preview = document.getElementById('preview');
 

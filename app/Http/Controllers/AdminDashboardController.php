@@ -4,21 +4,20 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Anggota;
-use Illuminate\Support\Facades\Storage; // buat simpan file
-use Illuminate\Support\Facades\Auth; // ambil user login
+use Illuminate\Support\Facades\Storage; 
+use Illuminate\Support\Facades\Auth; 
 
 class AdminDashboardController extends Controller
 {
     public function index()
     {
-        return view('admin.dashboard'); // untuk route /admin/dashboard
+        return view('admin.dashboard'); 
     }
 
  public function pencarian(Request $request)
 {
     $q = $request->q;
 
-    // Ambil anggota + pinjaman langsung (eager loading)
     $anggota = Anggota::with('pinjaman')
         ->when($q, function($query) use ($q) {
             $query->where('nama', 'like', "%$q%");
@@ -30,7 +29,7 @@ class AdminDashboardController extends Controller
 
     public function profile()
     {
-        return view('admin.profile'); // untuk route /admin/profile
+        return view('admin.profile'); 
     }
 
 public function updateProfile(Request $request)

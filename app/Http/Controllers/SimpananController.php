@@ -9,12 +9,11 @@ class SimpananController extends Controller
 {
     public function index($anggota_id)
     {
-        // ambil data simpanan
+    
         $simpanan = DB::table('simpanan')
             ->where('anggota_id', $anggota_id)
             ->get();
 
-        // hitung total
         $total = DB::table('simpanan')
             ->where('anggota_id', $anggota_id)
             ->sum('jumlah');

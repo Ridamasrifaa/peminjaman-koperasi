@@ -86,7 +86,6 @@
 
 </div>
 
-{{-- PREVIEW SCRIPT --}}
 <script>
 document.getElementById('imageInput').addEventListener('change', function(event) {
     const preview = document.getElementById('preview');
@@ -99,7 +98,7 @@ document.getElementById('imageInput').addEventListener('change', function(event)
 });
 </script>
 
-{{-- AUTO HILANG 3 DETIK --}}
+
 <script>
 setTimeout(function() {
     const alertBox = document.getElementById('successAlert');

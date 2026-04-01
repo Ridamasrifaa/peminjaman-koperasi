@@ -11,9 +11,7 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     */
+
     protected $fillable = [
         'nama',
         'email',
@@ -22,28 +20,16 @@ class User extends Authenticatable
         'foto',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     */
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
 
-    /*
-    |--------------------------------------------------------------------------
-    | RELASI
-    |--------------------------------------------------------------------------
-    */
 
-    // 1 user punya 1 kredit
     public function kredit()
     {
         return $this->hasOne(Kredit::class);

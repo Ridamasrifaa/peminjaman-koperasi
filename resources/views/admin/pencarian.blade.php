@@ -101,8 +101,6 @@ Tidak
 </div>
 </div>
 
-
-<!-- MODAL ERROR (ANGGOTA TIDAK BISA DIHAPUS) -->
 @if(session('error'))
 <div id="errorModal" class="modal-backdrop-custom-pu" style="display:flex;">
 <div class="modal-box-pu">

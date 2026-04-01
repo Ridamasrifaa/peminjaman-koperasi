@@ -22,19 +22,19 @@ class AnggotaController extends Controller
         return view('admin.pencarian', compact('anggota'));
     }
 
-    // GET /anggota/{id}
+   
     public function show($id)
     {
         return Anggota::find($id);
     }
 
-    // GET /admin/anggota/create
+    
     public function create()
     {
         return view('admin.tambah-anggota');
     }
 
-    // POST /admin/anggota
+   
     public function store(Request $request)
     {
        $validated = $request->validate([
@@ -64,7 +64,7 @@ class AnggotaController extends Controller
     'role'     => 'anggota',
 ]);
 
-            // Buat record anggota
+            
             Anggota::create([
                 'nama'     => $validated['nama'],
                 'email'    => $validated['email'],
@@ -85,7 +85,7 @@ class AnggotaController extends Controller
         }
     }
 
-    // EDIT (TAMBAHAN)
+  
     public function edit($id)
     {
         $anggota = Anggota::findOrFail($id);
@@ -107,7 +107,7 @@ class AnggotaController extends Controller
             ->with('success','Data berhasil diupdate');
     }
 
-    // DELETE
+   
 public function destroy($id)
 {
     $anggota = Anggota::findOrFail($id);

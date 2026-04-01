@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Storage;
 class AnggotaDashboardController extends Controller
 {
 
-    // ================= DASHBOARD =================
     public function index()
     {
         $user = Auth::user();
@@ -26,52 +25,42 @@ class AnggotaDashboardController extends Controller
 
         if ($anggota) {
 
-            // ambil pinjaman approved terbaru
-            $pinjaman = Pinjaman::where('anggota_id', $anggota->id)
+            $pinjamanList = Pinjaman::where('anggota_id', $anggota->id)
                 ->where('status', 'approved')
-                ->orderBy('id', 'desc')
-                ->first();
+                ->get();
 
-            if ($pinjaman) {
+            foreach ($pinjamanList as $pinjaman) {
 
-                $bunga = $pinjaman->bunga_persen;
-
-                /*
-                ============================================
-                TOTAL SUDAH DIBAYAR
-                ============================================
-                */
+                
                 $totalDibayar = Angsuran::where('pinjaman_id', $pinjaman->id)
                     ->where('status', 'lunas')
                     ->sum('total_bayar');
 
-                /*
-                ============================================
-                SISA KREDIT
-                ============================================
-                */
-                $kredit = $pinjaman->total_pinjaman - $totalDibayar;
+              
+                $sisa = $pinjaman->total_pinjaman - $totalDibayar;
 
-                /*
-                ============================================
-                CICILAN PER BULAN
-                ============================================
-                */
+              
+                $kredit += $sisa;
+
+                
+                $bunga = $pinjaman->bunga_persen;
+
                 $cicilan = $pinjaman->tenor > 0
                     ? $pinjaman->total_pinjaman / $pinjaman->tenor
                     : 0;
-
-                $pinjamanBarang = collect([
-                    (object)[
-                        'nama'   => 'Hanphone',
-                        'gambar' => 'hp.png'
-                    ],
-                    (object)[
-                        'nama'   => 'Sepatu',
-                        'gambar' => 'sepatu.png'
-                    ]
-                ]);
             }
+
+           
+            $pinjamanBarang = collect([
+                (object)[
+                    'nama'   => 'Hanphone',
+                    'gambar' => 'hp.png'
+                ],
+                (object)[
+                    'nama'   => 'Sepatu',
+                    'gambar' => 'sepatu.png'
+                ]
+            ]);
         }
 
         return view('anggota.dashboard_anggota', compact(
@@ -84,7 +73,7 @@ class AnggotaDashboardController extends Controller
     }
 
 
-    // ================= CICILAN =================
+
     public function cicilan()
     {
         $user = Auth::user();
@@ -99,7 +88,7 @@ class AnggotaDashboardController extends Controller
 
             $pinjaman = Pinjaman::where('anggota_id', $anggota->id)
                 ->where('status', 'approved')
-                ->orderBy('id','desc')
+                ->latest()
                 ->first();
 
             if ($pinjaman) {
@@ -129,32 +118,30 @@ class AnggotaDashboardController extends Controller
     }
 
 
-    // ================= UPDATE PROFILE =================
-   public function updateProfile(Request $request)
-{
-    $user = auth()->user();
+   
+    public function updateProfile(Request $request)
+    {
+        $user = auth()->user();
 
-    $request->validate([
-        'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
-    ]);
+        $request->validate([
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
+        ]);
 
-    if ($request->hasFile('foto')) {
+        if ($request->hasFile('foto')) {
 
-        if ($user->foto) {
-            Storage::delete('public/' . $user->foto);
+            if ($user->foto) {
+                Storage::delete('public/' . $user->foto);
+            }
+
+            $path = $request->file('foto')->store('profile', 'public');
+            $user->foto = $path;
         }
 
-        $path = $request->file('foto')->store('profile', 'public');
-        $user->foto = $path;
+        $user->save();
+
+        return redirect()->route('anggota.edit_profile')
+            ->with('success', 'Profile berhasil diupdate');
     }
-
-    $user->save();
-
-    return redirect()->route('anggota.edit_profile')
-           ->with('success', 'Profile berhasil diupdate');
-}
-
-     
 
 
     public function profile()
@@ -193,49 +180,49 @@ class AnggotaDashboardController extends Controller
     }
 
     public function listPinjaman()
-{
-    $user = auth()->user();
+    {
+        $user = auth()->user();
 
-    $anggota = \App\Models\Anggota::where('id_users', $user->id)->first();
+        $anggota = Anggota::where('id_users', $user->id)->first();
 
-    if (!$anggota) {
-        return back()->with('error','Data anggota tidak ditemukan');
+        if (!$anggota) {
+            return back()->with('error','Data anggota tidak ditemukan');
+        }
+
+        $pinjamanList = Pinjaman::with('angsuran')
+            ->where('anggota_id', $anggota->id)
+            ->orderBy('created_at','desc')
+            ->get();
+
+        return view('anggota.list_pinjaman', compact('pinjamanList'));
     }
 
-    $pinjamanList = \App\Models\Pinjaman::with('angsuran')
-        ->where('anggota_id', $anggota->id)
-        ->orderBy('created_at','desc')
-        ->get();
+    public function cicilanDetail($id)
+    {
+        $pinjaman = Pinjaman::with('angsuran')->findOrFail($id);
 
-    return view('anggota.list_pinjaman', compact('pinjamanList'));
-}
+        $tagihanSekarang = $pinjaman->angsuran()
+            ->where('status','belum')
+            ->orderBy('cicilan_ke')
+            ->first();
 
-public function cicilanDetail($id)
-{
-    $pinjaman = \App\Models\Pinjaman::with('angsuran')->findOrFail($id);
+        $tagihanSelanjutnya = $pinjaman->angsuran()
+            ->where('status','belum')
+            ->orderBy('cicilan_ke')
+            ->skip(1)
+            ->take(2)
+            ->get();
 
-    $tagihanSekarang = $pinjaman->angsuran()
-        ->where('status','belum')
-        ->orderBy('cicilan_ke')
-        ->first();
+        $riwayatTagihan = $pinjaman->angsuran()
+            ->where('status','lunas')
+            ->orderBy('cicilan_ke')
+            ->get();
 
-    $tagihanSelanjutnya = $pinjaman->angsuran()
-        ->where('status','belum')
-        ->orderBy('cicilan_ke')
-        ->skip(1)
-        ->take(2)
-        ->get();
-
-    $riwayatTagihan = $pinjaman->angsuran()
-        ->where('status','lunas')
-        ->orderBy('cicilan_ke')
-        ->get();
-
-    return view('anggota.cicilan', compact(
-        'pinjaman',
-        'tagihanSekarang',
-        'tagihanSelanjutnya',
-        'riwayatTagihan'
-    ));
-}
+        return view('anggota.cicilan', compact(
+            'pinjaman',
+            'tagihanSekarang',
+            'tagihanSelanjutnya',
+            'riwayatTagihan'
+        ));
+    }
 }

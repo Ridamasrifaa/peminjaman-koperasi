@@ -7,13 +7,12 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    // GET /api/users
+
     public function index()
     {
         return User::all();
     }
 
-    // DELETE /api/users/{id}
     public function destroy($id)
     {
         $user = User::findOrFail($id);

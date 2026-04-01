@@ -31,7 +31,6 @@ class AuthController extends Controller
         ])->withInput();
     }
 
-    // 🔥 CEK APAKAH MASIH PUNYA DATA ANGGOTA
     if ($user->role === 'anggota') {
         $anggota = Anggota::where('id_users', $user->id)->first();
 

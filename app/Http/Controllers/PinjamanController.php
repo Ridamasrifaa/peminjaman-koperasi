@@ -19,9 +19,7 @@ class PinjamanController extends Controller
         return Pinjaman::with('anggota')->findOrFail($id);
     }
 
-    // ===============================
-    // LIST SEMUA PINJAMAN PER ANGGOTA
-    // ===============================
+
     public function listPinjaman($id)
     {
         $pinjamanList = Pinjaman::with('angsuran')
@@ -54,9 +52,7 @@ public function cekPinjamanAnggota($id)
     return redirect()->route('admin.pinjaman.list', $id);
 }
 
-    // ===============================
-    // DETAIL CICILAN
-    // ===============================
+
     public function detail($id)
     {
         $pinjaman = Pinjaman::with('anggota')->find($id);
@@ -95,9 +91,6 @@ public function cekPinjamanAnggota($id)
         ));
     }
 
-   // ===============================
-// BAYAR ANGSURAN
-// ===============================
 
 
 public function bayar($id)
@@ -110,7 +103,7 @@ public function bayar($id)
 
     $now = Carbon::now();
 
-    // Update cicilan → status lunas + bulan & tahun diubah ke hari bayar
+
     $angsuran->update([
     'status' => 'lunas',
     'tanggal_bayar' => $now,
@@ -120,9 +113,7 @@ public function bayar($id)
     return back()->with('success','Pembayaran berhasil.');
 }
 
-    // ===============================
-    // STORE PINJAMAN BARU
-    // ===============================
+
     public function store(Request $request)
     {
         $request->validate([
@@ -180,9 +171,7 @@ for ($i = 0; $i < $pinjaman->tenor; $i++) {
     $sisaPokok -= $pokokPerBulan;
     $totalPinjaman += $totalBayar;
 }
-   
 
-   
 
         $pinjaman->update([
             'total_pinjaman' => $totalPinjaman
@@ -191,9 +180,7 @@ for ($i = 0; $i < $pinjaman->tenor; $i++) {
         return redirect()->route('pinjaman.detail', $pinjaman->id);
     }
 
-    // ===============================
-    // UPDATE PINJAMAN
-    // ===============================
+
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -223,9 +210,7 @@ for ($i = 0; $i < $pinjaman->tenor; $i++) {
         return redirect()->route('pinjaman.detail', $pinjaman->id);
     }
 
-    // ===============================
-    // DELETE PINJAMAN
-    // ===============================
+
     public function destroy($id)
     {
         $pinjaman = Pinjaman::findOrFail($id);
