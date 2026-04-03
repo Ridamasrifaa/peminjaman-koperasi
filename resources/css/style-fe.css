@@ -13,7 +13,8 @@ width:100%;
 max-width:430px;
 min-height:100vh;
 padding-bottom:70px;
-position: fixed; 
+position: relative; 
+margin: 0;
 }
 
 .header-login {
@@ -60,10 +61,10 @@ gap: 0;
 }
 
 .form {
-margin-top: 120px;
+margin-top: 0px;
 width: 220px;
 margin-left: auto;
- margin-right: auto;
+margin-right: auto;
 }
 
 .label-login {
@@ -1576,7 +1577,7 @@ transition: 0.5s;
 }
 
 .section-title-ds{
-  background:#fff;
+  background:linear-gradient(180deg,#0A9A25,#E6F1E8);
   border-radius:30px;
   padding:10px;
   text-align:center;

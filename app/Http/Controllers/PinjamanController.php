@@ -22,6 +22,9 @@ class PinjamanController extends Controller
 
     public function listPinjaman($id)
     {
+        if (!in_array(auth()->user()->role, ['admin','sekertaris'])) {
+    abort(403);
+}
         $pinjamanList = Pinjaman::with('angsuran')
             ->where('anggota_id', $id)
             ->orderBy('created_at', 'desc')
@@ -30,11 +33,12 @@ class PinjamanController extends Controller
         return view('admin.list-pinjaman', compact('pinjamanList'));
     }
 
-// ===============================
-// CEK & ARAHKAN PINJAMAN ANGGOTA
-// ===============================
+
 public function cekPinjamanAnggota($id)
 {
+    if (!in_array(auth()->user()->role, ['admin','sekertaris'])) {
+    abort(403);
+}
     $pinjamanCount = Pinjaman::where('anggota_id', $id)->count();
 
     // Tidak ada pinjaman
@@ -55,6 +59,9 @@ public function cekPinjamanAnggota($id)
 
     public function detail($id)
     {
+        if (!in_array(auth()->user()->role, ['admin','sekertaris'])) {
+    abort(403);
+}
         $pinjaman = Pinjaman::with('anggota')->find($id);
 
         if (!$pinjaman) {
@@ -95,6 +102,9 @@ public function cekPinjamanAnggota($id)
 
 public function bayar($id)
 {
+    if (!in_array(auth()->user()->role, ['admin','sekertaris'])) {
+    abort(403);
+}
     $angsuran = Angsuran::findOrFail($id);
 
     if ($angsuran->status == 'lunas') {
@@ -116,6 +126,9 @@ public function bayar($id)
 
     public function store(Request $request)
     {
+        if (!in_array(auth()->user()->role, ['admin','sekertaris'])) {
+    abort(403);
+}
         $request->validate([
             'anggota_id'        => 'required|integer',
             'jumlah_pinjaman' => 'required',

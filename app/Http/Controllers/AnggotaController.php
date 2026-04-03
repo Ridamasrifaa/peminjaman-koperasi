@@ -92,22 +92,31 @@ class AnggotaController extends Controller
         return view('admin.edit_anggota', compact('anggota'));
     }
 
-    // UPDATE
     public function update(Request $request, $id)
-    {
-        $anggota = Anggota::findOrFail($id);
+{
+    $anggota = Anggota::findOrFail($id);
 
-        $anggota->update([
+    // update anggota
+    $anggota->update([
+        'nama' => $request->nama,
+        'no_hp' => $request->no_hp,
+        'email' => $request->email
+    ]);
+
+    
+    $user = User::find($anggota->id_users);
+
+    if ($user) {
+        $user->update([
             'nama' => $request->nama,
-            'no_hp' => $request->no_hp,
             'email' => $request->email
         ]);
-
-        return redirect('/admin/pencarian')
-            ->with('success','Data berhasil diupdate');
     }
 
-   
+    return redirect('/admin/pencarian')
+        ->with('success','Data berhasil diupdate');
+}
+
 public function destroy($id)
 {
     $anggota = Anggota::findOrFail($id);

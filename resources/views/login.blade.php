@@ -15,6 +15,35 @@ font-weight:500;
 .forgot-password:hover{
 color:#ffca2c;
 }
+
+
+.judul0{
+color: white;
+top: 0%;
+text-style: Bold;
+text-size: 32px
+}
+
+
+.judul1{
+background:linear-gradient( 45deg,#ffff,#CAD222);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+font-size: 3vh; 
+margin-top: -100px;
+
+}
+
+.judul{
+background:linear-gradient( 45deg,#ffff,#1DDF9E);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+font-size: 3vh;
+margin-top: -40px;
+text-style: Bold;
+}
+
+
 </style>
 </head>
 
@@ -26,11 +55,21 @@ color:#ffca2c;
     <img src="{{ asset('img/logo/logo.png') }}" style="width:118px;height:auto;margin:20px;">
     <div class="logo-right">
         <img src="{{ asset('img/logo/smk.png') }}" style="width:40px;height:auto;">
-        <img src="{{ asset('img/logo/jabar.png') }}" style="width:40px;height:auto;">
+        
     </div>
-</div>
+</div>      
+
+
+
+
+
 
 <div class="form">
+    <div class="judul0">
+        <div class="judul1"> <h1>Kredit</h1></div>
+        <div class="judul"> <h3> Koperasi</h3></div>
+    </div>
+
 <form action="{{ route('login') }}" method="POST">
 @csrf
 
@@ -78,11 +117,32 @@ style="position:absolute; right:15px; top:50%; transform:translateY(-50%); curso
 <script>
 function togglePassword() {
 const password = document.getElementById("password");
+const eyeIcon = document.getElementById("eyeIcon");
 
 if (password.type === "password") {
-password.type = "text";
+    password.type = "text";
+
+    
+    if (!document.getElementById("eyeSlash")) {
+        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line.setAttribute("id", "eyeSlash");
+        line.setAttribute("x1", "3");
+        line.setAttribute("y1", "3");
+        line.setAttribute("x2", "21");
+        line.setAttribute("y2", "21");
+        line.setAttribute("stroke", "#555");
+        line.setAttribute("stroke-width", "2");
+
+        eyeIcon.appendChild(line);
+    }
+
 } else {
-password.type = "password";
+    password.type = "password";
+
+    const line = document.getElementById("eyeSlash");
+    if (line) {
+        line.remove();
+    }
 }
 }
 </script>

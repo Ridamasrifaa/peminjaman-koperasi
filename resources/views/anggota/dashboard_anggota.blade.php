@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  @vite('public/css/style-fe.css')
+  @vite('resources/css/style-fe.css')
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cicilan App</title>
@@ -84,10 +84,13 @@
           <div class="label-ds">Sepatu</div>
         </a>
 
+        <h1>Dashboard Anggota</h1>
+
       </div>
     </div>
 
   </div>
+  
 </div>
 
 <div class="bottom-nav-ds">
