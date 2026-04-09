@@ -109,7 +109,7 @@
     </div>
 
     <div class="container-message">
-      <p>Masukan email anda <br>untuk mendapatkan <br>link reset password.</p>
+      <p>Masukkan email anda <br>untuk mendapatkan <br>link reset password.</p>
     </div>
 
     <div class="container-form">
@@ -122,7 +122,7 @@
           id="email"
           name="email"
           class="form-control"
-          placeholder="Masukan Email"
+          placeholder="Masukkan Email"
           required
           autocomplete="email"
         />

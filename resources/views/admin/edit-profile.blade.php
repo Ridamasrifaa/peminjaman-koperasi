@@ -14,7 +14,7 @@
   <div class="header-edit">
     <!-- Back arrow pakai route Laravel -->
     <a href="{{ url('/admin/profile') }}" class="panah-edit"><i data-feather="arrow-left"></i></a>
-    <div>Edit Profil</div>
+    <div>Edit Foto</div>
   </div>
 
  <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
@@ -33,7 +33,7 @@
 
             <div class="placeholder">
                 <i data-feather="upload"></i>
-                <p>Masukan Gambar</p>
+                <p>Masukkan Gambar</p>
             </div>
         </label>
     </div>

@@ -42,16 +42,16 @@ class AuthController extends Controller
     }
 
     // login user
-    Auth::login($user);
-    $request->session()->regenerate();
+Auth::login($user);
+$request->session()->regenerate();
 
-    if ($user->role === 'admin' || $user->role === 'sekertaris') {
-        return redirect('/admin/pencarian');
-    } elseif ($user->role === 'anggota') {
-        return redirect('/anggota');
-    }
+if ($user->role === 'admin' || $user->role === 'sekertaris') {
+    return redirect('/admin/pencarian');
+} elseif ($user->role === 'anggota') {
+    return redirect('/anggota');
+}
 
-    return redirect('/');
+return redirect('/');
 }
 
 }

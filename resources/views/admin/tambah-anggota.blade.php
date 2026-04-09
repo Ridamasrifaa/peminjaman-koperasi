@@ -37,17 +37,17 @@
       @csrf
         <div class="mb-3">
             <label class="form-label fw-semibold">Nama Lengkap</label>
-            <input type="text" name="nama" class="form-control" placeholder="Masukan Nama Lengkap" required>
+            <input type="text" name="nama" class="form-control" placeholder="Masukkan Nama Lengkap" required>
         </div>
 
         <div class="mb-3">
             <label class="form-label fw-semibold">Email</label>
-            <input type="email" name="email" class="form-control" placeholder="Masukan Email" required>
+            <input type="email" name="email" class="form-control" placeholder="Masukkan Email" required>
         </div>
 
         <div class="mb-3">
             <label class="form-label fw-semibold">Nomor Telepon</label>
-            <input type="tel" name="no_hp" class="form-control" placeholder="Masukan Nomor Telepon" required>
+            <input type="tel" name="no_hp" class="form-control" placeholder="Masukkan Nomor Telepon" required>
         </div>
         
       <div class="mb-3">
@@ -57,7 +57,7 @@
         type="password"
         name="password"
         class="form-control @error('password') is-invalid @enderror"
-        placeholder="Masukan Password"
+        placeholder="Masukkan Password"
         required
     >
 

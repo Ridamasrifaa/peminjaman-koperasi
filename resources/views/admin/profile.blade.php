@@ -31,7 +31,7 @@
                 class="avatar-pu" alt="Avatar">
 
                 <a href="{{ url('/admin/edit-profile') }}" class="editprofile-link-pu">
-                    Edit Profile
+                    Edit Foto
                 </a>
 
                 <h4>

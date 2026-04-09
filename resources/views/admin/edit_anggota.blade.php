@@ -98,21 +98,21 @@ text-decoration:none;
 <label class="form-label fw-semibold">Nama Lengkap</label>
 <input type="text" name="nama" class="form-control"
 value="{{ $anggota->nama }}"
-placeholder="Masukan Nama Lengkap">
+placeholder="Masukkan Nama Lengkap">
 </div>
 
 <div class="mb-3">
 <label class="form-label fw-semibold">Nomor Telepon</label>
 <input type="tel" name="no_hp" class="form-control"
 value="{{ old('no_hp',$anggota->no_hp) }}"
-placeholder="Masukan Nomor Telepon">
+placeholder="Masukkan Nomor Telepon">
 </div>
 
 <div class="mb-4">
 <label class="form-label fw-semibold">Email</label>
 <input type="email" name="email" class="form-control"
 value="{{ $anggota->email }}"
-placeholder="Masukan Email">
+placeholder="Masukkan Email">
 </div>
 
 <div class="d-grid mb-4">
