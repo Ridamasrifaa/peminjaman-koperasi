@@ -13,6 +13,7 @@ use App\Http\Controllers\AnggotaDashboardController;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 
 // HOME
 Route::get('/', function () { return view('login'); });
@@ -36,11 +37,9 @@ Route::get('/login', function () {
 
 })->name('login');
 
-Route::post('/login', [AuthController::class, 'login'])->name('login');
-Route::post('/logout', function () {
-    Auth::logout();
-    return redirect('/login');
-})->name('logout');
+Route::post('/login', [AuthController::class, 'login'])
+    ->name('login.process');
+
 
 
 // ANGGOTA (LOGIN)
@@ -113,7 +112,7 @@ Route::post('/logout', function () {
 });
 
 
-// PINJAMAN (GLOBAL - DIAMANKAN)
+// PINJAMAN 
 Route::get('/pinjaman', [PinjamanController::class, 'index'])
     ->middleware(['auth']);
 
@@ -135,9 +134,11 @@ Route::post('/simpanan', [SimpananController::class, 'store'])
 
 
 // USERS 
-Route::get('/users', [UserController::class, 'index']);
-Route::delete('/users/{id}', [UserController::class, 'destroy']);
-Route::put('/users/{id}', [UserController::class, 'update']);
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/users', [UserController::class, 'index']);
+    Route::delete('/users/{id}', [UserController::class, 'destroy']);
+    Route::put('/users/{id}', [UserController::class, 'update']);
+});
 
 
 // RESET PASSWORD
@@ -181,3 +182,11 @@ Route::post('/reset-password', function (Illuminate\Http\Request $request) {
 
     return redirect('/login')->with('status', 'Password berhasil diubah!');
 });
+Route::post('/logout', function (Request $request) {
+    Auth::logout();
+
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return redirect('/login');
+})->name('logout');

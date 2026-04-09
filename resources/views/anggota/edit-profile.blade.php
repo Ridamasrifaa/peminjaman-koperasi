@@ -15,10 +15,9 @@
         <a href="{{ route('anggota.profile') }}" class="panah-edit">
             <i data-feather="arrow-left"></i>
         </a>
-        <div>Edit Profil</div>
+        <div>Edit Foto</div>
     </div>
 
-    {{-- 🔥 NOTIF SUCCESS --}}
     @if(session('success'))
         <div id="successAlert" style="
             background: #d4edda;
@@ -55,7 +54,7 @@
 
                 <div class="placeholder">
                     <i data-feather="upload"></i>
-                    <p>Masukan Gambar</p>
+                    <p>Masukkan Gambar</p>
                 </div>
             </label>
         </div>

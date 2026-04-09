@@ -33,7 +33,7 @@
         <a href="https://wa.me/628115204504?text={{ urlencode('Halo admin, saya '.auth()->user()->nama.' ingin mengajukan cicilan') }}" 
            target="_blank" class="cs-box" style="color:black; text-decoration:none; display:flex; align-items:center; gap:8px;">
           <i data-feather="phone"></i>
-          <span>08116860146</span>
+          <span>082116860146</span>
         </a>
       </div>
 

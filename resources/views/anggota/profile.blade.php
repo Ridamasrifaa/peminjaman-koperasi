@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+    
+    <meta name="csrf-token" content="{{ csrf_token() }}">
   @vite('resources/css/style-fe.css')
 <meta charset="UTF-8">
     <title>Profile</title>
@@ -30,7 +32,7 @@
             class="avatar-pu"
             style="margin-bottom: 8px;">
     @endif
-     <a href="{{ route('anggota.edit_profile') }}" class="editprofile-link-pu">Edit Profile</a>
+     <a href="{{ route('anggota.edit_profile') }}" class="editprofile-link-pu">Edit Foto</a>
         
     <h4>Halo, {{ auth()->user()->nama }}</h4>
 
@@ -73,7 +75,7 @@
 
       <form action="{{ route('logout') }}" method="POST">
         @csrf
-        <button type="submit" class="btn-yes-pu">Ya</button>
+        <button onclick="logout()" class="btn-yes-pu">Ya</button>
       </form>
 
       <button type="button" class="btn-no-pu" onclick="closeModal()">Tidak</button>

@@ -16,31 +16,28 @@ font-weight:500;
 color:#ffca2c;
 }
 
-
 .judul0{
 color: white;
 top: 0%;
-text-style: Bold;
-text-size: 32px
+font-weight: bold;
+font-size: 32px;
 }
 
-
 .judul1{
-background:linear-gradient( 45deg,#ffff,#CAD222);
+background:linear-gradient(45deg,#ffff,#CAD222);
 -webkit-background-clip: text;
 -webkit-text-fill-color: transparent;
 font-size: 3vh; 
-margin-top: -100px;
-
+margin-top: -5px;
 }
 
 .judul{
-background:linear-gradient( 45deg,#ffff,#1DDF9E);
+background:linear-gradient(45deg,#ffff,#1DDF9E);
 -webkit-background-clip: text;
 -webkit-text-fill-color: transparent;
 font-size: 3vh;
 margin-top: -40px;
-text-style: Bold;
+font-weight: bold;
 }
 
 
@@ -70,10 +67,10 @@ text-style: Bold;
         <div class="judul"> <h3> Koperasi</h3></div>
     </div>
 
-<form action="{{ route('login') }}" method="POST">
-@csrf
+<form action="{{ route('login.process') }}" method="POST">
+    @csrf
 
-<label class="label-login">Masukan Email</label>
+<label class="label-login">Masukkan Email</label>
 <input class="input-login" type="email" name="email" placeholder="Email" required>
 
 @error('email')
@@ -83,7 +80,7 @@ text-style: Bold;
 @enderror
 
 
-<label class="label-login">Masukan Password</label>
+<label class="label-login">Masukkan Password</label>
 <div style="position:relative;">
 <input id="password" class="input-login" type="password" name="password" placeholder="Password" required>
 

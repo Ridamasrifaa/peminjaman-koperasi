@@ -78,10 +78,9 @@
 <div class="mobile-wrapper">
 
     <div class="header">
-        <div class="icon-btn" style="cursor:pointer;" onclick="history.back()">
-            <i data-feather="arrow-left"></i>
-        </div>
-
+   <div class="icon-btn" style="cursor:pointer;" onclick="window.location.href='/login-page'">
+    <i data-feather="arrow-left"></i>
+</div>
         <h6>Reset Password</h6>
     </div>
 
@@ -93,7 +92,7 @@
             <input type="hidden" name="token" value="{{ $token }}">
 
             <div class="mb-3">
-                <input type="email" name="email" class="form-control" placeholder="Masukan Email" required>
+                <input type="email" name="email" class="form-control" placeholder="Masukkan Email" required>
             </div>
 
             <div class="mb-3">
