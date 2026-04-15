@@ -127,6 +127,19 @@ Pembayaran {{ $t->cicilan_ke }} • {{ $bulanTagihan->format('M Y') }}
 </div>
 
 <div class="section-cicilan1">
+    {{-- NAMBAHIN INI --}}
+    <div style="margin-bottom:10px;">
+        <b>Total Pinjaman:</b> 
+        Rp {{ number_format($pinjaman->total_pinjaman,0,',','.') }} <br>
+        
+        <b>Status:</b> 
+        @if($pinjaman->status == 'approved')
+        <span style="color:green;">Aktif</span>
+        @elseif($pinjaman->status == 'direstruktur')
+        <span style="color:red;">Direstruktur</span>
+        @endif
+    </div>
+
 <h4>Riwayat Tagihan</h4>
 @forelse($riwayatTagihan as $a)
 <div class="card-green riwayat">

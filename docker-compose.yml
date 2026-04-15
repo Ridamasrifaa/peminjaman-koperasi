@@ -1,0 +1,41 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    container_name: laravel-app
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www/html
+    networks:
+      - laravel-net
+    depends_on:
+      - mariadb
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+
+  mariadb:
+    image: mariadb:10.11
+    container_name: laravel-mariadb
+    restart: unless-stopped
+    ports:
+      - "3307:3306" # Port 3307 di laptop biar tidak bentrok
+    environment:
+      MARIADB_ROOT_PASSWORD: rootpassword123
+      MARIADB_DATABASE: peminjamankoprasi
+      MARIADB_USER: laravel_user
+      MARIADB_PASSWORD: password123
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - laravel-net
+
+networks:
+  laravel-net:
+    driver: bridge
+
+volumes:
+  mariadb_data:

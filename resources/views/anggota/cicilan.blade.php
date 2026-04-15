@@ -25,6 +25,18 @@
 
   {{-- TAGIHAN SAAT INI --}}
   <div class="section-cu-amount">
+
+    <div style="margin-bottom:10px;">
+      <b>Total Pinjaman:</b> 
+      Rp {{ number_format($pinjaman->total_pinjaman,0,',','.') }} <br>
+      <b>Status:</b> 
+      @if($pinjaman->status == 'approved')
+      <span style="color:green;">Aktif</span>
+      @elseif($pinjaman->status == 'direstruktur')
+      <span style="color:red;">Direstruktur</span>
+      @endif
+    </div>
+
     <h4>Tagihan Saat Ini</h4>
 
     @if($tagihanSekarang)
