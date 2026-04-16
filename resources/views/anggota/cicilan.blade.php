@@ -26,7 +26,7 @@
   {{-- TAGIHAN SAAT INI --}}
   <div class="section-cu-amount">
 
-    <div style="margin-bottom:10px;">
+    <div style="margin-bottom:10px;"> 
       <b>Total Pinjaman:</b> 
       Rp {{ number_format($pinjaman->total_pinjaman,0,',','.') }} <br>
       <b>Status:</b> 

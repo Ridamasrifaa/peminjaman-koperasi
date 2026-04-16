@@ -88,6 +88,9 @@ Route::post('/login', [AuthController::class, 'login'])
         return view('admin.ajukan-pinjaman', compact('id'));
     })->name('admin.pinjaman.ajukan');
 
+    Route::post('/cicilan/lunasi-sekaligus/{id}', [CicilanController::class, 'lunasiSekaligus'])
+     ->name('cicilan.lunasi_sekaligus');
+
     // PINJAMAN ADMIN (AMAN)
     Route::get('/admin/pinjaman/{id}', [PinjamanController::class, 'detail'])
         ->name('pinjaman.detail');
