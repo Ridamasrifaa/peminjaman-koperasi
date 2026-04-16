@@ -136,12 +136,11 @@ class PinjamanController extends Controller
     $jumlahBaru = str_replace(['Rp', '.', ' '], '', $request->jumlah_pinjaman);
     $bunga = 2;
 
-    // 🔍 CEK PINJAMAN AKTIF
+    
     $pinjaman = Pinjaman::where('anggota_id', $request->anggota_id)
         ->where('status', 'approved')
         ->first();
 
-    // ✅ KALAU ADA → GABUNG (UPDATE)
     if ($pinjaman) {
 
         // hitung sisa
@@ -152,10 +151,10 @@ class PinjamanController extends Controller
         // total baru
         $totalBaru = $jumlahBaru + $sisa;
 
-        // ❗ HAPUS CICILAN LAMA
+        
         Angsuran::where('pinjaman_id', $pinjaman->id)->delete();
 
-        // UPDATE pinjaman (bukan create baru)
+        
         $pinjaman->update([
             'jumlah_pinjaman' => $totalBaru,
             'tenor'           => $request->tenor,
@@ -163,7 +162,7 @@ class PinjamanController extends Controller
         ]);
 
     } else {
-        // ✅ kalau belum ada → bikin baru
+       
         $pinjaman = Pinjaman::create([
             'anggota_id'        => $request->anggota_id,
             'approved_by'       => null,

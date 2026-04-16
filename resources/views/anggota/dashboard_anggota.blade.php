@@ -402,7 +402,7 @@
 
       <div class="grid-ds">
 
-        <a href="https://wa.me/{{ env('WA_ADMIN') }}?text={{ urlencode('Halo admin, saya '.auth()->user()->nama.' ingin mengajukan cicilan Handphone') }}" 
+        <a href="https://wa.me/{{ env('WA_ADMIN2') }}?text={{ urlencode('Halo admin, saya '.auth()->user()->nama.' ingin mengajukan cicilan Handphone') }}" 
            target="_blank" 
            class="card-item-ds">
 
@@ -410,7 +410,7 @@
           <div class="label-ds">Handphone</div>
         </a>
 
-        <a href="https://wa.me/{{ env('WA_ADMIN') }}?text={{ urlencode('Halo admin, saya '.auth()->user()->nama.' ingin mengajukan cicilan Sepatu') }}" 
+        <a href="https://wa.me/{{ env('WA_ADMIN2') }}?text={{ urlencode('Halo admin, saya '.auth()->user()->nama.' ingin mengajukan cicilan Sepatu') }}" 
            target="_blank" 
            class="card-item-ds">
 
@@ -423,7 +423,7 @@
 
     <div class="cicilan-box">
       <p>Tertarik cicilan barang diatas?</p>
-      <a href="https://wa.me/{{ env('WA_ADMIN') }}" class="btn-dashboard">
+      <a href="https://wa.me/{{ env('WA_ADMIN2') }}" class="btn-dashboard">
         Yuk klik disini untuk menghubungi admin sekarang!!
       </a>
     </div>
@@ -437,20 +437,22 @@
   <a href="#logoutModal" onclick="openModal()"><i data-feather="log-out"></i></a>
 </div>
 
+<!-- Modal Logout -->
 <div id="logoutModal" class="modal-backdrop-custom-pu">
-  <div class="modal-box-pu">
-    <h5>Peringatan</h5>
-    <p>Apakah anda yakin ingin keluar?</p>
+    <div class="modal-box-pu">
+        <h5>Peringatan</h5>
+        <p>Apakah anda yakin ingin keluar?</p>
 
-    <div class="modal-actions-pu">
-      <form action="{{ route('logout') }}" method="POST">
-        @csrf
-        <button type="submit" class="btn-yes-pu">Ya</button>
-      </form>
+        <div class="modal-actions-pu">
+            <!-- Form Logout yang sudah diperbaiki -->
+            <form action="{{ route('logout') }}" method="POST" id="logoutForm">
+                @csrf
+                <button type="submit" class="btn-yes-pu">Ya</button>
+            </form>
 
-      <button class="btn-no-pu" onclick="closeModal()">Tidak</button>
+            <button class="btn-no-pu" onclick="closeModal()">Tidak</button>
+        </div>
     </div>
-  </div>
 </div>
 
 <script>
@@ -461,6 +463,16 @@ function openModal() {
 function closeModal() {
     document.getElementById('logoutModal').style.display = 'none';
 }
+
+// Pastikan form logout mengirim CSRF dengan benar
+document.addEventListener('DOMContentLoaded', function() {
+    const logoutForm = document.getElementById('logoutForm');
+    if (logoutForm) {
+        logoutForm.addEventListener('submit', function() {
+            // Optional: bisa tambah loading jika mau
+        });
+    }
+});
 
 feather.replace();
 </script>

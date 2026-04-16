@@ -44,4 +44,30 @@ class AngsuranController extends Controller
             'data' => $angsuran
         ]);
     }
+
+    public function lunasiSekaligus($pinjamanId)
+    {
+        if (!in_array(auth()->user()->role, ['admin', 'sekertaris'])) {
+            abort(403);
+        }
+
+        $pinjaman = Pinjaman::findOrFail($pinjamanId);
+        $now = \Carbon\Carbon::now();
+
+        // Update semua angsuran yang belum lunas menjadi lunas
+        Angsuran::where('pinjaman_id', $pinjamanId)
+            ->where('status', 'belum')
+            ->update([
+                'status' => 'lunas',
+                'tanggal_bayar' => $now,
+                'bulan' => $now->month,
+                'tahun' => $now->year,
+            ]);
+
+        // Update status pinjaman menjadi lunas
+        $pinjaman->update(['status' => 'lunas']);
+
+        return redirect()->route('cicilan', $pinjamanId)
+            ->with('success', 'Semua cicilan berhasil dilunasi!');
+    }
 }

@@ -20,8 +20,8 @@
     <div class="cs-wrapper">
 
       <div class="cs-item">
-        <label>Suminar</label>
-        <a href="https://wa.me/628115204504?text={{ urlencode('Halo admin, saya '.auth()->user()->nama.' ingin mengajukan cicilan') }}" 
+        <label>Suminar,S.Kom.,M.Kom.</label>
+        <a href="https://wa.me/{{ env('WA_ADMIN') }}" class="btn-dashboard"
            target="_blank" class="cs-box" style="color:black; text-decoration:none; display:flex; align-items:center; gap:8px;">
           <i data-feather="phone"></i>
           <span>081323025049</span>
@@ -29,8 +29,8 @@
       </div>
 
       <div class="cs-item">
-        <label>Siti Nurmala</label>
-        <a href="https://wa.me/628115204504?text={{ urlencode('Halo admin, saya '.auth()->user()->nama.' ingin mengajukan cicilan') }}" 
+        <label>Siti Nurmala,S.Pd</label>
+        <a href="https://wa.me/{{ env('WA_ADMIN2') }}" class="btn-dashboard" 
            target="_blank" class="cs-box" style="color:black; text-decoration:none; display:flex; align-items:center; gap:8px;">
           <i data-feather="phone"></i>
           <span>082116860146</span>
