@@ -8,6 +8,8 @@
     <script src="https://unpkg.com/feather-icons"></script>
 
     <style>
+        
+        
         /* Custom Alert Pop-up */
         .custom-alert {
             display: none;
@@ -75,6 +77,14 @@
         .overlay.show {
             display: block;
         }
+
+        .info-text {
+            text-align: center;
+            margin: 70px 0 20px 0; /* sebelumnya 25px → sekarang 45px */
+            color: #666;
+            font-size: 16px;
+            font-weight: 500;
+        }
     </style>
 </head>
 
@@ -97,7 +107,11 @@
     <form action="{{ route('anggota.update_profile') }}" method="POST" enctype="multipart/form-data" id="profileForm">
         @csrf
 
+    
         <div class="upload-box">
+             <div class="info-text">
+            Foto yang di upload Maksimal 2MB
+        </div>
             <input type="file" id="imageInput" name="foto" accept="image/*">
             <label for="imageInput" class="upload-label">
                 @if(auth()->user()->foto)
@@ -113,16 +127,12 @@
             </label>
         </div>
 
-        <div style="text-align: center; margin: 15px 0; color: #666; font-size: 14px;">
-            Foto yang di upload Maksimal 2MB
-        </div>
-
         <div class="submit-edit">
             <button type="submit">Simpan</button>
         </div>
+
     </form>
 
-    <!-- Bottom Nav -->
     <div class="bottom-nav-edit">
         <a href="{{ route('anggota.dashboard') }}" class="menu-edit"><i data-feather="home"></i></a>
         <a href="{{ route('anggota.profile') }}" class="menu-edit"><i data-feather="user"></i></a>
@@ -136,7 +146,6 @@
 
 </div>
 
-<!-- Custom Pop-up Alert -->
 <div class="overlay" id="overlay"></div>
 <div class="custom-alert" id="customAlert">
     <i data-feather="alert-triangle"></i>
@@ -158,27 +167,24 @@
         document.getElementById('customAlert').classList.remove('show');
     }
 
-    // Validasi saat memilih file
     document.getElementById('imageInput').addEventListener('change', function(event) {
         const preview = document.getElementById('preview');
         const file = event.target.files[0];
-        const maxSize = 2 * 1024 * 1024; // 2MB
+        const maxSize = 2 * 1024 * 1024;
 
         if (file) {
             if (file.size > maxSize) {
                 showCustomAlert("Maaf Foto anda melebihi 2MB, silakan pilih foto lain yang lebih kecil.");
-                this.value = '';           // kosongkan input
+                this.value = '';
                 preview.hidden = true;
                 return;
             }
 
-            // Jika ukuran OK
             preview.src = URL.createObjectURL(file);
             preview.hidden = false;
         }
     });
 
-    // Validasi saat submit
     document.getElementById('profileForm').addEventListener('submit', function(e) {
         const fileInput = document.getElementById('imageInput');
         const file = fileInput.files[0];
