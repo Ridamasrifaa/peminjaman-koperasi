@@ -422,7 +422,7 @@
     </div>
 
     <div class="cicilan-box">
-      <p>Tertarik cicilan barang diatas?</p>
+      <p>Tertarik untuk mengajukan cicilan barang lainnya?</p>
       <a href="https://wa.me/{{ env('WA_ADMIN2') }}" class="btn-dashboard">
         Yuk klik disini untuk menghubungi admin sekarang!!
       </a>

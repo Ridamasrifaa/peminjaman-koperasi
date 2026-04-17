@@ -90,10 +90,29 @@
         border: none;
         cursor: pointer;
         transition: background-color 0.3s;
-        }
+    }
 
-        .btn-kirim:hover {
+    .btn-kirim:hover {
         background-color: #096527;
+    }
+
+    /* Modal yang lebih kecil & compact */
+    .modal-success .modal-dialog {
+      max-width: 320px;
+    }
+
+    .modal-success .modal-content {
+      border-radius: 18px;
+      border: 3px solid #0A9A25;
+    }
+
+    .modal-success .modal-body {
+      padding: 25px 20px;
+      text-align: center;
+    }
+
+    .modal-success .modal-title {
+      font-size: 1.3rem;
     }
   </style>
 </head>
@@ -104,7 +123,6 @@
       <div class="icon-btn" style="cursor:pointer;" onclick="history.back()">
         <i data-feather="arrow-left"></i>
       </div>
-
       <h6>Lupa Password</h6>
     </div>
 
@@ -113,8 +131,7 @@
     </div>
 
     <div class="container-form">
-
-      <form method="POST" action="/forgot-password">
+      <form id="forgotForm" method="POST" action="/forgot-password">
         @csrf
 
         <input
@@ -128,14 +145,61 @@
         />
 
         <button type="submit" class="btn btn-kirim">Kirim</button>
-
       </form>
-
     </div>
   </div>
 
+  <!-- Success Modal - Versi Kecil & Ringkas -->
+  <div class="modal fade modal-success" id="successModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header justify-content-center border-0">
+          <h5 class="modal-title text-success fw-bold">✓ Berhasil</h5>
+        </div>
+        <div class="modal-body">
+          <p class="mb-1 fs-5">Link reset password telah terkirim ke email anda.</p>
+          <p class="text-muted small">Cek juga folder spam jika tidak ada di inbox.</p>
+        </div>
+        <div class="modal-footer border-0 justify-content-center pb-4">
+          <button type="button" class="btn btn-success px-5 py-2" data-bs-dismiss="modal" onclick="window.location.href='/'">
+            OK
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     feather.replace();
+
+    document.getElementById('forgotForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const form = this;
+      const formData = new FormData(form);
+
+      fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+      .then(response => {
+        if (response.ok) {
+          const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+          successModal.show();
+          form.reset();
+        } else {
+          alert('Terjadi kesalahan. Silakan coba lagi.');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Gagal mengirim permintaan. Periksa koneksi anda.');
+      });
+    });
   </script>
 </body>
 </html>

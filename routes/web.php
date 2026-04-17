@@ -145,10 +145,11 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
 
 // RESET PASSWORD
-Route::get('/forgot-password', function () {
-    return view('auth.forgot-password');
-})->name('password.request');
-
+Route::middleware('throttle:60,1')->group(function () {
+    Route::get('/forgot-password', function () {
+        return view('auth.forgot-password');
+    })->name('password.request');
+});
 Route::post('/forgot-password', function (Illuminate\Http\Request $request) {
 
     $request->validate([
